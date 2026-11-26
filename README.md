@@ -41,7 +41,7 @@ Headless Claude Code (`claude -p`, model set by `TF_MODEL`, default `opus`) prop
 | Validation | `factory.build` in Docker: nop 0.0, oracle 1.0, no regressions. On failure the agent gets the problems back, for up to `--repairs` rounds |
 
 Every decision is logged to `evidence/generation_log.jsonl`. Failed drafts are moved to `specs_rejected/`.
-Self-check for the non-AI path: `.venv/bin/python -m pytest -q factory/test_generate.py`.
+Self-check for the non-AI path: `.venv/bin/python -m pytest -q -p no:anyio factory/test_generate.py`.
 
 ## Harbor validation
 ```bash

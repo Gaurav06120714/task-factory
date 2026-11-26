@@ -1,6 +1,6 @@
 """Checks the generator's non-AI path: extraction and guardrails.
 
-    .venv/bin/python -m pytest -q factory/test_generate.py
+    .venv/bin/python -m pytest -q -p no:anyio factory/test_generate.py
 
 Simulates an agent's finished working tree from the hand-made duration task.
 """

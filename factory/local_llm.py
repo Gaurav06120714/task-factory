@@ -84,8 +84,19 @@ BLOCK_RE = re.compile(r"^=== (EDIT|NEW) (\S+)\n(.*?)^=== END\s*$", re.S | re.M)
 SR_RE = re.compile(r"<<<<<<< SEARCH\n(.*?)\n?=======\n(.*?)\n?>>>>>>> REPLACE", re.S)
 
 
+FENCE_RE = re.compile(r"^\s*```[\w+-]*\n(.*?)\n?```\s*$", re.S)
+
+
+def unfence(body: str) -> str:
+    """Small models wrap file bodies in markdown fences; strip them."""
+    m = FENCE_RE.match(body)
+    body = m.group(1) if m else body
+    return re.sub(r"\n```\s*$", "", body)
+
+
 def parse_blocks(text: str) -> list[tuple[str, str, str]]:
-    return [(kind, path, body) for kind, path, body in BLOCK_RE.findall(text)]
+    return [(kind, path, unfence(body) if kind == "NEW" else body)
+            for kind, path, body in BLOCK_RE.findall(text)]
 
 
 def _replace_loose(content: str, search: str, replace: str) -> str | None:
@@ -136,7 +147,11 @@ def apply_blocks(repo: Path, blocks: list[tuple[str, str, str]]) -> list[str]:
 
 def host_tests(cfg: dict, repo: Path, env: dict, path: str) -> tuple[bool, str]:
     cmd = cfg["host_test_cmd"].format(path=path)
-    p = subprocess.run(cmd, shell=True, cwd=repo, env=env, capture_output=True, text=True, timeout=900)
+    try:  # stdin closed + timeout: a test waiting for terminal input fails fast instead of hanging
+        p = subprocess.run(cmd, shell=True, cwd=repo, env=env, capture_output=True, text=True,
+                           timeout=180, stdin=subprocess.DEVNULL)
+    except subprocess.TimeoutExpired:
+        return False, "tests timed out after 180s (a test is probably waiting for input or looping)"
     return p.returncode == 0, (p.stdout + p.stderr)[-4000:]
 
 
@@ -148,15 +163,35 @@ def touched_files(repo: Path) -> list[str]:
     return names
 
 
+def worked_example(cfg: dict) -> str:
+    """One validated task from this repo, shown to the model as the quality bar."""
+    from factory.build import ROOT
+    specs = sorted((ROOT / "specs" / cfg["name"]).glob("*/solution.patch"))
+    if not specs:
+        return ""
+    spec = specs[0].parent
+    tests = "\n".join(f.read_text() for f in sorted((spec / "feature").rglob("*.py")))
+    return ("Here is an EXAMPLE of a finished, validated task for this repository. Match its quality: "
+            "a small, self-contained feature; precise requirement text with exact messages; tests that "
+            "use the project's test helpers and check exact output.\n"
+            f"--- example TASK_INSTRUCTION.md\n{(spec / 'instruction.md').read_text()}\n"
+            f"--- example source change (git diff)\n{(spec / 'solution.patch').read_text()}\n"
+            f"--- example test file\n{tests}\n--- end of example\n\n")
+
+
 def run(cfg: dict, repo: Path, env: dict, task_prompt: str, test_file: str,
         files: list[str], rounds: int, log) -> None:
     """Ask for edits, apply, test on host; repair until tests pass or rounds run out."""
     test_path = f"{cfg['test_dir']}/{test_file}"
     files = sorted(f for f in set(files) | set(touched_files(repo)) if (repo / f).is_file())
-    prompt = (f"{task_prompt}\n\nRepository outline:\n{outline(cfg, repo)}\n\n"
+    prompt = (f"{worked_example(cfg)}{task_prompt}\n\nRepository outline:\n{outline(cfg, repo)}\n\n"
               + "\n\n".join(file_block(repo, f) for f in files) + f"\n\n{PROTOCOL}")
     for i in range(rounds + 1):
-        reply = chat(prompt)
+        try:
+            reply = chat(prompt, timeout=900)
+        except (TimeoutError, OSError) as e:  # a slow reply is a failed round, not a dead task
+            log("local_round", round=i, error=f"model call failed: {e}")
+            continue
         blocks = parse_blocks(reply)
         problems = apply_blocks(repo, blocks) if blocks else ["reply contained no EDIT/NEW blocks"]
         ok_new, out_new = host_tests(cfg, repo, env, test_path) if (repo / test_path).exists() else (False, "test file missing")
@@ -191,6 +226,8 @@ def _selfcheck() -> None:
         assert (repo / "tests" / "test_a.py").read_text() == "assert True\n"
         assert len(problems) == 2 and "not found" in problems[0] and "outside" in problems[1]
         assert not (repo.parent / "escape.py").exists()
+        fenced = parse_blocks("=== NEW t.py\n```python\nx = 1\n```\n=== END\n")
+        assert fenced[0][2] == "x = 1", fenced              # markdown fences stripped
     print("local_llm selfcheck ok")
 
 
