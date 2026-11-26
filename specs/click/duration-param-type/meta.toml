@@ -1,0 +1,5 @@
+title = "Add a click.Duration parameter type for human-readable time spans"
+area = "types"
+change_kind = "new_public_api"
+difficulty = "medium"
+tags = ["click", "param-type", "parsing", "timedelta"]

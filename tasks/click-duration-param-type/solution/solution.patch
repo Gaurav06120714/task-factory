@@ -1,0 +1,124 @@
+diff --git a/src/click/__init__.py b/src/click/__init__.py
+index a34ab02..61f8c42 100644
+--- a/src/click/__init__.py
++++ b/src/click/__init__.py
+@@ -56,6 +56,7 @@ from .termui import unstyle as unstyle
+ from .types import BOOL as BOOL
+ from .types import Choice as Choice
+ from .types import DateTime as DateTime
++from .types import Duration as Duration
+ from .types import File as File
+ from .types import FLOAT as FLOAT
+ from .types import FloatRange as FloatRange
+diff --git a/src/click/types.py b/src/click/types.py
+index b6e98a9..fadd4b3 100644
+--- a/src/click/types.py
++++ b/src/click/types.py
+@@ -4,11 +4,13 @@ import abc
+ import collections.abc as cabc
+ import enum
+ import os
++import re
+ import stat
+ import sys
+ import typing as t
+ import uuid
+ from datetime import datetime
++from datetime import timedelta
+ from gettext import gettext as _
+ from gettext import ngettext
+ 
+@@ -907,6 +909,93 @@ class UUIDParameterType(ParamType[uuid.UUID]):
+         return "UUID"
+ 
+ 
++class DurationInfoDict(ParamTypeInfoDict):
++    min: float | None
++    max: float | None
++
++
++_DURATION_RE = re.compile(
++    r"(?:(?P<d>\d+)d)?(?:(?P<h>\d+)h)?(?:(?P<m>\d+)m)?(?:(?P<s>\d+)s)?",
++    re.IGNORECASE,
++)
++
++
++class Duration(ParamType[timedelta]):
++    """Convert a human-readable duration such as ``1h30m`` into a
++    :class:`datetime.timedelta`.
++
++    A value is one or more ``<integer><unit>`` components using the units
++    ``d``, ``h``, ``m`` and ``s`` (case-insensitive), each at most once and
++    in that order. A bare non-negative integer is a number of seconds.
++
++    :param min: Smallest accepted duration, inclusive.
++    :param max: Largest accepted duration, inclusive.
++    """
++
++    name = "duration"
++
++    def __init__(
++        self, min: timedelta | None = None, max: timedelta | None = None
++    ) -> None:
++        self.min = min
++        self.max = max
++
++    def to_info_dict(self) -> DurationInfoDict:
++        return {
++            "min": None if self.min is None else self.min.total_seconds(),
++            "max": None if self.max is None else self.max.total_seconds(),
++            **super().to_info_dict(),
++        }
++
++    def _parse(self, value: str) -> timedelta | None:
++        text = value.strip()
++        if text.isdigit():
++            return timedelta(seconds=int(text))
++        match = _DURATION_RE.fullmatch(text)
++        if not text or match is None:
++            return None
++        parts = {k: int(v) for k, v in match.groupdict().items() if v is not None}
++        return timedelta(
++            days=parts.get("d", 0),
++            hours=parts.get("h", 0),
++            minutes=parts.get("m", 0),
++            seconds=parts.get("s", 0),
++        )
++
++    def convert(
++        self, value: t.Any, param: Parameter | None, ctx: Context | None
++    ) -> timedelta:
++        if isinstance(value, timedelta):
++            result: timedelta | None = value
++        else:
++            result = self._parse(str(value))
++
++        if result is None:
++            self.fail(
++                _("{value!r} is not a valid duration.").format(value=value),
++                param,
++                ctx,
++            )
++
++        if (self.min is not None and result < self.min) or (
++            self.max is not None and result > self.max
++        ):
++            low = "-" if self.min is None else str(self.min)
++            high = "-" if self.max is None else str(self.max)
++            self.fail(
++                _("{value!r} is not in the range {low} to {high}.").format(
++                    value=value, low=low, high=high
++                ),
++                param,
++                ctx,
++            )
++
++        return result
++
++    def __repr__(self) -> str:
++        return "Duration"
++
++
+ class FileInfoDict(ParamTypeInfoDict):
+     mode: str
+     encoding: str | None

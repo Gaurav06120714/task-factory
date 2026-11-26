@@ -1,0 +1,32 @@
+{
+  "reward": 1.0,
+  "fail_to_pass_passed": [
+    "tests.test_duration_type::test_both_bounds_message",
+    "tests.test_duration_type::test_cli_converts_to_timedelta",
+    "tests.test_duration_type::test_exported_from_types",
+    "tests.test_duration_type::test_help_metavar",
+    "tests.test_duration_type::test_invalid_values[-5]",
+    "tests.test_duration_type::test_invalid_values[1.5h]",
+    "tests.test_duration_type::test_invalid_values[1h 30m]",
+    "tests.test_duration_type::test_invalid_values[1h1h]",
+    "tests.test_duration_type::test_invalid_values[1w]",
+    "tests.test_duration_type::test_invalid_values[30m1h]",
+    "tests.test_duration_type::test_invalid_values[]",
+    "tests.test_duration_type::test_invalid_values[abc]",
+    "tests.test_duration_type::test_invalid_values[h]",
+    "tests.test_duration_type::test_max_bound_inclusive_and_message",
+    "tests.test_duration_type::test_min_bound_message",
+    "tests.test_duration_type::test_repr_and_info_dict",
+    "tests.test_duration_type::test_timedelta_passthrough",
+    "tests.test_duration_type::test_valid_values[  10m  -expected7]",
+    "tests.test_duration_type::test_valid_values[0-expected1]",
+    "tests.test_duration_type::test_valid_values[1D2H3M4S-expected6]",
+    "tests.test_duration_type::test_valid_values[1h30m-expected4]",
+    "tests.test_duration_type::test_valid_values[2d4h-expected5]",
+    "tests.test_duration_type::test_valid_values[45s-expected3]",
+    "tests.test_duration_type::test_valid_values[5m-expected2]",
+    "tests.test_duration_type::test_valid_values[90-expected0]"
+  ],
+  "fail_to_pass_failed": [],
+  "pass_to_pass_failed": []
+}

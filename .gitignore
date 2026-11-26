@@ -1,0 +1,5 @@
+.venv/
+work/
+jobs/
+evidence/**/junit.xml
+__pycache__/

@@ -1,0 +1,37 @@
+# Task Factory: Innodata AI Hackathon, Track 1
+
+Turns a repository into validated Harbor 0.25 feature-development task packages.
+
+## Layout
+```
+repos/<name>.toml          everything repo-specific (url, base_commit, test_cmd, Dockerfile)
+specs/<repo>/<slug>/       one task spec: instruction.md, solution.patch, feature/ tests, meta.toml
+factory/build.py           spec -> Harbor package + local validation (nop 0.0 / oracle 1.0)
+factory/grade.py           grader shipped inside every task (stdlib only)
+tasks/                     generated Harbor task packages
+evidence/                  per-task logs, JUnit XML, validation reports
+work/                      repo clones (not committed)
+```
+
+## Setup
+```bash
+python3 -m venv .venv
+.venv/bin/pip install "harbor==0.25.*" pytest
+```
+
+## Build and validate one task locally (no Docker)
+```bash
+.venv/bin/python -m factory.build repos/click.toml specs/click/duration-param-type
+.venv/bin/harbor lint tasks/click-duration-param-type
+```
+
+## Harbor validation (needs Docker)
+```bash
+harbor run -p tasks/click-duration-param-type -a nop    -k 1 -o jobs/nop    --no-delete -y   # expect 0.0
+harbor run -p tasks/click-duration-param-type -a oracle -k 1 -o jobs/oracle --no-delete -y   # expect 1.0
+```
+
+## Grading
+- The verifier runs in a **separate** container. The agent's work is passed across only as `git diff`, which `[[verifier.collect]]` saves to `/logs/artifacts/agent.patch`.
+- Reward is 0.0 if any `pass_to_pass` test fails. Otherwise it is the share of `fail_to_pass` tests passing.
+- Test results are read from JUnit XML. pytest, vitest and ctest can all produce it, so the same grader works for any of the three repos.
