@@ -77,6 +77,13 @@ def test_proposal_filter():
         {"slug": "c", "title": "t", "area": "help", "change_kind": "output_format", "summary": "s"},
         {"slug": "d", "title": "t", "area": "core", "change_kind": "behaviour_rule", "summary": "s",
          "new_symbols": ["DateTime"]},  # already exists in click
+        {"slug": "e", "title": "t", "area": "x", "change_kind": "error_handling", "summary": "s",
+         "files": ["src/click/edit.py"]},  # no such file
+        {"slug": "f", "title": "t", "area": "click.types", "change_kind": "new_public_api", "summary": "s",
+         "files": ["src/click/types.py"]},  # area normalises to "types" -> duplicate
+        {"slug": "g", "title": "t", "area": "click.parser", "change_kind": "behaviour_rule", "summary": "s",
+         "files": ["src/click/parser.py"]},
     ]
     kept = generate.filter_proposals(CFG, props, existing)
-    assert [p["slug"] for p in kept] == ["b"]
+    assert [p["slug"] for p in kept] == ["b", "g"]
+    assert kept[1]["area"] == "parser"

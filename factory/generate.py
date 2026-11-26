@@ -153,15 +153,27 @@ def upstream_has(cfg: dict, symbol: str) -> bool:
     return False
 
 
+def git_has(repo: Path, ref: str, path: str) -> bool:
+    return subprocess.run(["git", "cat-file", "-e", f"{ref}:{path}"], cwd=repo,
+                          capture_output=True).returncode == 0
+
+
 def filter_proposals(cfg: dict, proposals: list[dict], existing: list[dict]) -> list[dict]:
     seen = {(e["area"], e["change_kind"]) for e in existing}
     slugs = {e["slug"] for e in existing}
     kept = []
+    base = clone(cfg)
     for p in proposals:
+        files = [f for f in p.get("files", []) if isinstance(f, str)]
+        if files and "area" in p:  # canonical area = module the feature lives in
+            p["area"] = Path(files[0]).stem
         key = (p.get("area"), p.get("change_kind"))
         reason = None
+        missing = [f for f in files if not git_has(base, cfg["base_commit"], f)]
         if not all(p.get(k) for k in ("slug", "title", "area", "change_kind", "summary")):
             reason = "missing fields"
+        elif missing:
+            reason = f"names files that do not exist: {missing}"
         elif p["slug"] in slugs:
             reason = "duplicate slug"
         elif key in seen:
