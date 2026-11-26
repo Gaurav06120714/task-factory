@@ -1,5 +1,6 @@
 FROM python:3.12-slim
-RUN apt-get update && apt-get install -y --no-install-recommends git \
+# less: click's pager tests shell out to it.
+RUN apt-get update && apt-get install -y --no-install-recommends git less \
     && rm -rf /var/lib/apt/lists/*
 # Fetch only the base commit so the agent cannot see later upstream history.
 RUN git init -q /app/repo && cd /app/repo \

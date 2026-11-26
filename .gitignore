@@ -3,3 +3,4 @@ work/
 jobs/
 evidence/**/junit.xml
 __pycache__/
+jobs/

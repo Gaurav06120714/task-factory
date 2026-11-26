@@ -1,4 +1,4 @@
-"""Turn a task spec into a Harbor 0.25 task package, validating it locally on the way.
+"""Turn a task spec into a Harbor 0.25 task package and validate it in Docker.
 
     python -m factory.build repos/click.toml specs/click/<slug>
 
@@ -8,21 +8,20 @@ A spec folder holds:
     feature/           new test files, laid out relative to the repo's test_dir
     meta.toml          title, area, change_kind, difficulty, tags
 
-Local validation (no Docker) runs the same grade.py the container will run:
+Everything runs inside the task's own image, so the regression list is collected in
+exactly the environment Harbor grades in:
     clean base               -> every passing test becomes pass_to_pass
     base + patch + tests     -> new passing tests become fail_to_pass
     nop    (tests, no patch) -> reward must be 0.0
-    oracle (tests + patch)   -> reward must be 1.0
+    oracle (solve.sh)        -> reward must be 1.0
 """
 
+import hashlib
 import json
-import os
 import shutil
 import subprocess
 import sys
-import tempfile
 import tomllib
-from contextlib import contextmanager
 from pathlib import Path
 
 from factory import grade
@@ -30,57 +29,42 @@ from factory import grade
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def sh(cmd: str, cwd: Path, env: dict | None = None) -> subprocess.CompletedProcess:
-    return subprocess.run(cmd, shell=True, cwd=cwd, env=env, check=True,
-                          capture_output=True, text=True)
+def docker(*args: str, check: bool = True) -> subprocess.CompletedProcess:
+    return subprocess.run(["docker", *args], check=check, capture_output=True, text=True)
 
 
-def clone(cfg: dict) -> Path:
-    path = ROOT / "work" / cfg["name"]
-    if not path.exists():
-        sh(f"git clone -q {cfg['url']} {path}", ROOT)
-    return path
+def image_for(cfg: dict, env_dir: Path) -> str:
+    """Build (once) the task image; tag by repo, commit and Dockerfile content."""
+    digest = hashlib.sha1((env_dir / "Dockerfile").read_bytes()).hexdigest()[:10]
+    tag = f"taskfactory-{cfg['name']}:{cfg['base_commit'][:12]}-{digest}"
+    if docker("image", "inspect", tag, check=False).returncode != 0:
+        docker("build", "-q", "-t", tag, str(env_dir))
+    return tag
 
 
-@contextmanager
-def worktree(cfg: dict):
-    """Fresh, detached checkout of base_commit; removed afterwards."""
-    src = clone(cfg)
-    tmp = Path(tempfile.mkdtemp(prefix=f"tf-{cfg['name']}-"))
-    sh(f"git worktree add -q --detach {tmp} {cfg['base_commit']}", src)
-    try:
-        yield tmp
-    finally:
-        sh(f"git worktree remove --force {tmp}", src)
+def run_in(tag: str, script: str, mounts: dict[Path, str], log: Path) -> None:
+    args = ["run", "--rm", "--network", "none"]
+    for host, target in mounts.items():
+        args += ["-v", f"{host}:{target}"]
+    proc = docker(*args, tag, "bash", "-c", script, check=False)
+    log.parent.mkdir(parents=True, exist_ok=True)
+    log.write_text(proc.stdout + proc.stderr)
 
 
-def local_env(cfg: dict, repo: Path) -> dict:
-    env = dict(os.environ)
-    env["PATH"] = f"{Path(sys.executable).parent}:{env['PATH']}"
-    for k, v in cfg.get("local_env", {}).items():
-        env[k] = str(repo / v)
-    return env
-
-
-def run(cfg: dict, repo: Path, out: Path) -> dict[str, bool]:
+def suite(cfg: dict, tag: str, out: Path, setup: str = "", mounts: dict | None = None) -> dict[str, bool]:
+    """Run the repo's test command in the image (after optional setup) -> junit results."""
     out.mkdir(parents=True, exist_ok=True)
-    junit = out / "junit.xml"
-    junit.unlink(missing_ok=True)
-    proc = subprocess.run(cfg["test_cmd"].format(junit=junit), shell=True, cwd=repo,
-                          env=local_env(cfg, repo), capture_output=True, text=True)
-    (out / "log.txt").write_text(proc.stdout + proc.stderr)
-    return grade.junit_results(junit)
+    cmd = cfg["test_cmd"].format(junit="/out/junit.xml")
+    run_in(tag, f"cd /app/repo && {setup} {cmd}", {out: "/out", **(mounts or {})}, out / "log.txt")
+    return grade.junit_results(out / "junit.xml")
 
 
-def grade_run(cfg: dict, task: Path, apply_patch: bool, out: Path) -> dict:
-    """Exactly what Harbor's nop / oracle runs do, minus Docker."""
-    with worktree(cfg) as repo:
-        if apply_patch:
-            sh(f"git apply {task / 'solution' / 'solution.patch'}", repo)
-        out.mkdir(parents=True, exist_ok=True)
-        subprocess.run([sys.executable, str(task / "tests" / "grade.py"),
-                        "--repo", str(repo), "--tests", str(task / "tests"), "--out", str(out)],
-                       cwd=repo, env=local_env(cfg, repo), capture_output=True, text=True)
+def harbor_like(tag: str, task: Path, oracle: bool, out: Path) -> dict:
+    """What `harbor run -a nop|oracle` does: (solve.sh), then tests/test.sh."""
+    out.mkdir(parents=True, exist_ok=True)
+    script = ("bash /solution/solve.sh && " if oracle else "") + "bash /tests/test.sh"
+    run_in(tag, script, {task / "tests": "/tests", task / "solution": "/solution",
+                         out: "/logs/verifier"}, out / "log.txt")
     return json.loads((out / "grade_details.json").read_text())
 
 
@@ -156,7 +140,7 @@ def q(s: str) -> str:
     return json.dumps(s)  # TOML basic strings and JSON strings agree for our text
 
 
-def package(cfg: dict, spec: Path, out_dir: Path, f2p: list[str], p2p: list[str]) -> Path:
+def package(cfg: dict, spec: Path, out_dir: Path) -> Path:
     meta = tomllib.loads((spec / "meta.toml").read_text())
     task_id = f"{cfg['name']}-{spec.name}"
     task = out_dir / task_id
@@ -180,8 +164,6 @@ def package(cfg: dict, spec: Path, out_dir: Path, f2p: list[str], p2p: list[str]
     shutil.copytree(spec / "feature", task / "tests" / "feature")
     (task / "tests" / "config.json").write_text(json.dumps(
         {"test_cmd": cfg["test_cmd"], "test_dir": cfg["test_dir"]}, indent=2))
-    (task / "tests" / "fail_to_pass.json").write_text(json.dumps(f2p, indent=2))
-    (task / "tests" / "pass_to_pass.json").write_text(json.dumps(p2p, indent=2))
     for s in ("solution/solve.sh", "tests/test.sh"):
         (task / s).chmod(0o755)
     return task
@@ -194,30 +176,32 @@ def build(repo_toml: Path, spec: Path) -> dict:
     if evidence.exists():
         shutil.rmtree(evidence)
 
+    task = package(cfg, spec, ROOT / "tasks")
+    tag = image_for(cfg, task / "environment")
+
     # 1. Clean base: what passes today is the regression set.
-    with worktree(cfg) as repo:
-        base = run(cfg, repo, evidence / "base")
+    base = suite(cfg, tag, evidence / "base")
     p2p = sorted(t for t, ok in base.items() if ok)
     if not p2p:
-        raise SystemExit("base run produced no passing tests; check test_cmd")
+        raise SystemExit(f"base run produced no passing tests; see {evidence / 'base' / 'log.txt'}")
 
     # 2. Base + patch + feature tests: new tests that pass are the feature set.
-    with worktree(cfg) as repo:
-        sh(f"git apply {spec / 'solution.patch'}", repo)
-        grade.install_feature_tests(spec, repo, cfg["test_dir"])
-        oracle_raw = run(cfg, repo, evidence / "oracle_raw")
+    oracle_raw = suite(
+        cfg, tag, evidence / "oracle_raw",
+        setup=f"git apply /solution/solution.patch && cp -r /tests/feature/. {cfg['test_dir']}/ &&",
+        mounts={task / "solution": "/solution", task / "tests": "/tests"})
     new = sorted(set(oracle_raw) - set(base))
     f2p = [t for t in new if oracle_raw[t]]
     problems = [f"new test not passing with reference patch: {t}" for t in new if not oracle_raw[t]]
     problems += [f"regression broken by patch: {t}" for t in p2p if not oracle_raw.get(t)]
     if not f2p:
         problems.append("no fail_to_pass tests found")
+    (task / "tests" / "fail_to_pass.json").write_text(json.dumps(f2p, indent=2))
+    (task / "tests" / "pass_to_pass.json").write_text(json.dumps(p2p, indent=2))
 
-    task = package(cfg, spec, ROOT / "tasks", f2p, p2p)
-
-    # 3. The two checks Harbor will run, done locally with the packaged grader.
-    nop = grade_run(cfg, task, apply_patch=False, out=evidence / "nop")
-    oracle = grade_run(cfg, task, apply_patch=True, out=evidence / "oracle")
+    # 3. The two checks Harbor will run, with the packaged scripts.
+    nop = harbor_like(tag, task, oracle=False, out=evidence / "nop")
+    oracle = harbor_like(tag, task, oracle=True, out=evidence / "oracle")
     if nop["reward"] != 0.0 or nop["fail_to_pass_passed"]:
         problems.append(f"nop reward {nop['reward']} (want 0.0); passing: {nop['fail_to_pass_passed']}")
     if nop["pass_to_pass_failed"]:
@@ -225,11 +209,11 @@ def build(repo_toml: Path, spec: Path) -> dict:
     if oracle["reward"] != 1.0:
         problems.append(f"oracle reward {oracle['reward']} (want 1.0)")
 
-    report = {"task": task.name, "base_commit": cfg["base_commit"],
+    report = {"task": task.name, "base_commit": cfg["base_commit"], "image": tag,
               "fail_to_pass": len(f2p), "pass_to_pass": len(p2p),
               "nop_reward": nop["reward"], "oracle_reward": oracle["reward"],
               "valid": not problems, "problems": problems}
-    (evidence / "local_validation.json").write_text(json.dumps(report, indent=2))
+    (evidence / "validation.json").write_text(json.dumps(report, indent=2))
     return report
 
 

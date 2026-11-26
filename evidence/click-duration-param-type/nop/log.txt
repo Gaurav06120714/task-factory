@@ -1,0 +1,79 @@
+ and will be removed in Click 9.0. The"
+                " old parser is available in 'optparse'.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _OptionParser
+    
+        if name == "__version__":
+            import importlib.metadata
+    
+            warnings.warn(
+                "The '__version__' attribute is deprecated and will be removed in"
+                " Click 9.1. Use feature detection or"
+                " 'importlib.metadata.version(\"click\")' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return importlib.metadata.version("click")
+    
+        if name == "get_binary_stream":
+            from .utils import _get_binary_stream
+    
+            warnings.warn(
+                "'get_binary_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_binary_stream
+    
+        if name == "get_text_stream":
+            from .utils import _get_text_stream
+    
+            warnings.warn(
+                "'get_text_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_text_stream
+    
+>       raise AttributeError(name)
+E       AttributeError: Duration
+
+src/click/__init__.py:144: AttributeError
+___________________________ test_exported_from_types ___________________________
+
+    def test_exported_from_types():
+>       from click.types import Duration
+E       ImportError: cannot import name 'Duration' from 'click.types' (/app/repo/src/click/types.py)
+
+tests/test_duration_type.py:93: ImportError
+----------------- generated xml file: /logs/verifier/junit.xml -----------------
+=========================== short test summary info ============================
+FAILED tests/test_duration_type.py::test_valid_values[90-expected0] - Attribu...
+FAILED tests/test_duration_type.py::test_valid_values[0-expected1] - Attribut...
+FAILED tests/test_duration_type.py::test_valid_values[5m-expected2] - Attribu...
+FAILED tests/test_duration_type.py::test_valid_values[45s-expected3] - Attrib...
+FAILED tests/test_duration_type.py::test_valid_values[1h30m-expected4] - Attr...
+FAILED tests/test_duration_type.py::test_valid_values[2d4h-expected5] - Attri...
+FAILED tests/test_duration_type.py::test_valid_values[1D2H3M4S-expected6] - A...
+FAILED tests/test_duration_type.py::test_valid_values[  10m  -expected7] - At...
+FAILED tests/test_duration_type.py::test_invalid_values[] - AttributeError: D...
+FAILED tests/test_duration_type.py::test_invalid_values[abc] - AttributeError...
+FAILED tests/test_duration_type.py::test_invalid_values[1.5h] - AttributeErro...
+FAILED tests/test_duration_type.py::test_invalid_values[-5] - AttributeError:...
+FAILED tests/test_duration_type.py::test_invalid_values[30m1h] - AttributeErr...
+FAILED tests/test_duration_type.py::test_invalid_values[1h1h] - AttributeErro...
+FAILED tests/test_duration_type.py::test_invalid_values[1w] - AttributeError:...
+FAILED tests/test_duration_type.py::test_invalid_values[1h 30m] - AttributeEr...
+FAILED tests/test_duration_type.py::test_invalid_values[h] - AttributeError: ...
+FAILED tests/test_duration_type.py::test_timedelta_passthrough - AttributeErr...
+FAILED tests/test_duration_type.py::test_cli_converts_to_timedelta - Attribut...
+FAILED tests/test_duration_type.py::test_max_bound_inclusive_and_message - At...
+FAILED tests/test_duration_type.py::test_min_bound_message - AttributeError: ...
+FAILED tests/test_duration_type.py::test_both_bounds_message - AttributeError...
+FAILED tests/test_duration_type.py::test_help_metavar - AttributeError: Duration
+FAILED tests/test_duration_type.py::test_repr_and_info_dict - AttributeError:...
+FAILED tests/test_duration_type.py::test_exported_from_types - ImportError: c...
+25 failed, 2434 passed, 24 skipped, 31000 deselected, 1 xfailed in 2.53s
+reward=0.0
