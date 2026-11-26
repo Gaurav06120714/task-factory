@@ -26,11 +26,13 @@ import tomllib
 from contextlib import contextmanager
 from pathlib import Path
 
-from factory import build
+from factory import build, local_llm
 
 ROOT = build.ROOT
+# "ollama" (free, local; default) or "claude" (headless Claude Code CLI).
+BACKEND = os.environ.get("TF_BACKEND", "ollama")
 CLAUDE = os.environ.get("TF_CLAUDE", "claude")
-MODEL = os.environ.get("TF_MODEL", "opus")
+MODEL = os.environ.get("TF_MODEL", "opus") if BACKEND == "claude" else local_llm.MODEL
 LOG = ROOT / "evidence" / "generation_log.jsonl"
 
 
@@ -121,15 +123,22 @@ Existing tasks (do not repeat their area+change_kind or their idea):
 Reply with ONLY a JSON array, no prose. Each element:
 {{"slug": "kebab-case-id", "title": "...", "area": "short module/subsystem name", "change_kind": "...",
   "summary": "2-4 sentences of the behaviour to add", "new_symbols": ["public names this adds, e.g. Duration"],
+  "files": ["existing source files to change, e.g. src/pkg/module.py"],
   "difficulty": "easy|medium|hard", "tags": ["..."], "why_realistic": "one sentence"}}
 """
 
 
 def parse_json_array(text: str) -> list[dict]:
-    start, end = text.find("["), text.rfind("]")
-    if start < 0 or end < start:
-        raise ValueError("no JSON array in model output")
-    return json.loads(text[start:end + 1])
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        start, end = text.find("["), text.rfind("]")
+        if start < 0 or end < start:
+            raise ValueError("no JSON array in model output")
+        data = json.loads(text[start:end + 1])
+    if isinstance(data, dict):  # JSON mode returns an object: take its list value
+        data = next((v for v in data.values() if isinstance(v, list)), [data])
+    return [p for p in data if isinstance(p, dict)]
 
 
 def upstream_has(cfg: dict, symbol: str) -> bool:
@@ -176,8 +185,12 @@ def propose(cfg: dict, n: int) -> list[dict]:
                         for e in existing) or "- (none)"
     prompt = PROPOSE.format(n=n * 2, existing=listing, **{**cfg, "source_paths": ", ".join(cfg["source_paths"])})
     with worktree(cfg) as repo:
-        out = claude(prompt, repo, ["Read", "Glob", "Grep"])
-    proposals = parse_json_array(out["result"])
+        if BACKEND == "claude":
+            text = claude(prompt, repo, ["Read", "Glob", "Grep"])["result"]
+        else:  # local model cannot browse: give it the repo's outline instead
+            text = local_llm.chat(prompt + "\n\nRepository outline:\n" + local_llm.outline(cfg, repo)
+                                  + '\n\nReturn {"proposals": [...]}.', json_mode=True)
+    proposals = parse_json_array(text)
     log("proposed", count=len(proposals), slugs=[p.get("slug") for p in proposals])
     return filter_proposals(cfg, proposals, existing)[:n]
 
@@ -268,13 +281,20 @@ def generate_one(repo_toml: Path, cfg: dict, proposal: dict, repairs: int) -> di
     slug = proposal["slug"]
     test_file = f"test_tf_{slug.replace('-', '_')}.py"
     spec_dir = ROOT / "specs" / cfg["name"] / slug
-    fmt = {**cfg, **proposal, "test_file": test_file, "test_hint": cfg["agent_test_hint"],
+    hint = cfg["agent_test_hint"] if BACKEND == "claude" else "The factory runs the tests for you and reports failures"
+    fmt = {**cfg, **proposal, "test_file": test_file, "test_hint": hint,
            "source_paths": ", ".join(cfg["source_paths"])}
     tools = ["Read", "Edit", "Write", "Glob", "Grep"] + [f"Bash({b})" for b in cfg["agent_bash"]]
 
+    def ask(prompt: str) -> None:
+        if BACKEND == "claude":
+            claude(prompt, repo, tools, env)
+        else:
+            local_llm.run(cfg, repo, env, prompt, test_file, proposal.get("files", []), repairs, log)
+
     with worktree(cfg) as repo:
         env = agent_env(cfg, repo)
-        claude(IMPLEMENT.format(**fmt), repo, tools, env)
+        ask(IMPLEMENT.format(**fmt))
         for attempt in range(repairs + 1):
             problems = extract_spec(cfg, repo, proposal, test_file, spec_dir)
             report = None
@@ -285,8 +305,7 @@ def generate_one(repo_toml: Path, cfg: dict, proposal: dict, repairs: int) -> di
             if not problems:
                 return {"slug": slug, "valid": True, "attempts": attempt + 1, **report}
             if attempt < repairs:
-                claude(REPAIR.format(problems="\n".join(f"- {p}" for p in problems[:20]), **fmt),
-                       repo, tools, env)
+                ask(REPAIR.format(problems="\n".join(f"- {p}" for p in problems[:20]), **fmt))
 
     # Keep rejected work as evidence of what the guardrails caught.
     if spec_dir.exists():
