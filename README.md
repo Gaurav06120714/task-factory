@@ -28,6 +28,21 @@ Docker must be running (OrbStack or Docker Desktop).
 ```
 The regression list (`pass_to_pass`) is collected inside the task image, not on the host. On macOS, pytest 9.x and a missing `less` gave different results from the Linux image, so a list collected on the host would not match what Harbor grades.
 
+## Generate tasks with AI
+```bash
+.venv/bin/python -m factory.generate repos/click.toml --count 4
+```
+Headless Claude Code (`claude -p`, model set by `TF_MODEL`, default `opus`) proposes features, then implements each one in a throwaway git worktree: the source change, a new test file and `TASK_INSTRUCTION.md`. Each draft has to pass these guardrails before it becomes a task:
+
+| Stage | Guardrail |
+|---|---|
+| Proposal | its (area, change_kind) differs from every existing task; any new public names must not already exist upstream (`origin/main`) |
+| Extraction | tests must be new files (no edits to existing tests); the patch may only touch `source_paths`; the instruction must not leak code or test file names |
+| Validation | `factory.build` in Docker: nop 0.0, oracle 1.0, no regressions. On failure the agent gets the problems back, for up to `--repairs` rounds |
+
+Every decision is logged to `evidence/generation_log.jsonl`. Failed drafts are moved to `specs_rejected/`.
+Self-check for the non-AI path: `.venv/bin/python -m pytest -q factory/test_generate.py`.
+
 ## Harbor validation
 ```bash
 harbor run -p tasks/click-duration-param-type -a nop    -k 1 -o jobs/nop    --no-delete -y   # expect 0.0

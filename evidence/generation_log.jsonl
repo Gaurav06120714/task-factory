@@ -1,0 +1,2 @@
+{"t": "2026-11-26T23:11:25", "event": "proposal_rejected", "slug": "a", "reason": "area+change_kind ('types', 'new_public_api') already covered"}
+{"t": "2026-11-26T23:11:25", "event": "proposal_rejected", "slug": "c", "reason": "area+change_kind ('help', 'output_format') already covered"}
