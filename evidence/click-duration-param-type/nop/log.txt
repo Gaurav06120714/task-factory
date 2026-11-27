@@ -1,4 +1,12 @@
- and will be removed in Click 9.0. The"
+stacklevel=2,
+            )
+            return _MultiCommand
+    
+        if name == "OptionParser":
+            from .parser import _OptionParser
+    
+            warnings.warn(
+                "'OptionParser' is deprecated and will be removed in Click 9.0. The"
                 " old parser is available in 'optparse'.",
                 DeprecationWarning,
                 stacklevel=2,
@@ -41,13 +49,6 @@
 E       AttributeError: Duration
 
 src/click/__init__.py:144: AttributeError
-___________________________ test_exported_from_types ___________________________
-
-    def test_exported_from_types():
->       from click.types import Duration
-E       ImportError: cannot import name 'Duration' from 'click.types' (/app/repo/src/click/types.py)
-
-tests/test_duration_type.py:93: ImportError
 ----------------- generated xml file: /logs/verifier/junit.xml -----------------
 =========================== short test summary info ============================
 FAILED tests/test_duration_type.py::test_valid_values[90-expected0] - Attribu...
@@ -75,5 +76,6 @@ FAILED tests/test_duration_type.py::test_both_bounds_message - AttributeError...
 FAILED tests/test_duration_type.py::test_help_metavar - AttributeError: Duration
 FAILED tests/test_duration_type.py::test_repr_and_info_dict - AttributeError:...
 FAILED tests/test_duration_type.py::test_exported_from_types - ImportError: c...
-25 failed, 2434 passed, 24 skipped, 31000 deselected, 1 xfailed in 2.53s
+FAILED tests/test_duration_type.py::test_min_bound_inclusive - AttributeError...
+26 failed, 2434 passed, 24 skipped, 31000 deselected, 1 xfailed in 2.44s
 reward=0.0

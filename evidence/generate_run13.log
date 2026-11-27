@@ -1,0 +1,42 @@
+[proposal_rejected] {"slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+[proposal_rejected] {"slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+[proposal_rejected] {"slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+[proposed] {"count": 4, "slugs": ["kebab-case", "key-value-pairs", "semver", "ip-address"]}
+[generating] {"slug": "kebab-case", "area": "kebab_case_module", "change_kind": "new_public_api"}
+[local_step] {"step": "impl", "round": 0, "ok": true}
+[local_step] {"step": "tests", "round": 0, "ok": false}
+[local_step] {"step": "tests", "round": 1, "ok": false}
+[local_step] {"step": "tests", "round": 2, "ok": false}
+[local_step] {"step": "drop_failing", "tests_left": 0}
+[attempt] {"slug": "kebab-case", "attempt": 0, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+[local_step] {"step": "tests", "round": 0, "ok": false}
+[local_step] {"step": "tests", "round": 1, "ok": false}
+[local_step] {"step": "tests", "round": 2, "ok": false}
+[local_step] {"step": "drop_failing", "tests_left": 0}
+[attempt] {"slug": "kebab-case", "attempt": 1, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+[local_step] {"step": "tests", "round": 0, "ok": false}
+[local_step] {"step": "tests", "round": 1, "ok": false}
+[local_step] {"step": "tests", "round": 2, "ok": false}
+[local_step] {"step": "drop_failing", "tests_left": 0}
+[attempt] {"slug": "kebab-case", "attempt": 2, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+[result] {"slug": "kebab-case", "valid": false, "attempts": null, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+[generating] {"slug": "key-value-pairs", "area": "key_value_pairs", "change_kind": "new_public_api"}
+[local_step] {"step": "impl", "round": 0, "ok": true}
+[local_step] {"step": "tests", "round": 0, "ok": false}
+[local_step] {"step": "tests", "round": 1, "ok": false}
+[local_step] {"step": "tests", "round": 2, "ok": false}
+[local_step] {"step": "drop_failing", "tests_left": 0}
+[attempt] {"slug": "key-value-pairs", "attempt": 0, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+[local_step] {"step": "tests", "round": 0, "ok": false}
+[local_step] {"step": "tests", "round": 1, "ok": false}
+[local_step] {"step": "tests", "round": 2, "ok": false}
+[local_step] {"step": "drop_failing", "tests_left": 0}
+[attempt] {"slug": "key-value-pairs", "attempt": 1, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+[local_step] {"step": "tests", "round": 0, "ok": false}
+[local_step] {"step": "tests", "round": 1, "ok": false}
+[local_step] {"step": "tests", "round": 2, "ok": false}
+[local_step] {"step": "drop_failing", "tests_left": 0}
+[attempt] {"slug": "key-value-pairs", "attempt": 2, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+[result] {"slug": "key-value-pairs", "valid": false, "attempts": null, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+[generating] {"slug": "semver", "area": "click_semver", "change_kind": "new_public_api"}
+[local_step] {"step": "impl", "round": 0, "ok": true}

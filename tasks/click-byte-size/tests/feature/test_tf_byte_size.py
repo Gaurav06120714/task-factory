@@ -52,3 +52,21 @@ def test_help_metavar():
     assert "--size BYTE_SIZE" in result.output
 
 
+
+
+# Added after mutation testing (see REVIEW.md): every unit, decimals, case and whitespace.
+@pytest.mark.parametrize("unit, power", [("K", 1), ("M", 2), ("G", 3), ("T", 4), ("P", 5), ("E", 6), ("Z", 7), ("Y", 8)])
+def test_every_unit(unit, power):
+    assert click.ByteSize().convert(f"3{unit}", None, None) == 3 * 1024**power
+    assert click.ByteSize().convert(f"3{unit.lower()}", None, None) == 3 * 1024**power
+
+
+@pytest.mark.parametrize("raw, expected", [("1.5K", 1536), (" 2M ", 2 * 1024**2), ("0.5k", 512), ("512", 512)])
+def test_decimals_whitespace_and_bare_bytes(raw, expected):
+    assert click.ByteSize().convert(raw, None, None) == expected
+
+
+def test_min_bound_inclusive():
+    result = CliRunner().invoke(make_cli(click.ByteSize(min=1024)), ["--size", "1K"])
+    assert result.exit_code == 0, result.output
+    assert result.output.strip() == "1024"

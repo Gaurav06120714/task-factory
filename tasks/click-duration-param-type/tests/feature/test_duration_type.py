@@ -93,3 +93,8 @@ def test_exported_from_types():
     from click.types import Duration
 
     assert click.Duration is Duration
+
+
+def test_min_bound_inclusive():
+    # Added after mutation testing: `<` -> `<=` on the lower bound survived.
+    assert click.Duration(min=timedelta(minutes=5)).convert("5m", None, None) == timedelta(minutes=5)

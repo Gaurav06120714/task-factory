@@ -34,4 +34,4 @@
 ........................................................................ [ 99%]
 ...........                                                              [100%]
 ---------------------- generated xml file: /out/junit.xml ----------------------
-2434 passed, 24 skipped, 31000 deselected, 1 xfailed in 2.66s
+2434 passed, 24 skipped, 31000 deselected, 1 xfailed in 2.67s

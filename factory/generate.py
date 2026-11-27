@@ -381,6 +381,10 @@ def generate_one(repo_toml: Path, cfg: dict, proposal: dict, repairs: int) -> di
                 problems = report["problems"]
             log("attempt", slug=slug, attempt=attempt, valid=not problems, problems=problems[:8])
             if not problems:
+                if cfg.get("language") == "python":  # test strength evidence; survivors go to human review
+                    from factory import mutate
+                    m = mutate.mutate(repo_toml, spec_dir)
+                    log("mutation", slug=slug, killed=m["killed"], mutants=m["mutants"], score=m["score"])
                 return {"slug": slug, "valid": True, "attempts": attempt + 1, **report}
             if attempt < repairs:
                 ask(REPAIR.format(problems="\n".join(f"- {p}" for p in problems[:20]), **fmt), problems[:20])

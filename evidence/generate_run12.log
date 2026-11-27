@@ -1,0 +1,8 @@
+[proposal_rejected] {"slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+[proposal_rejected] {"slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+[proposal_rejected] {"slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+[proposed] {"count": 4, "slugs": ["kebab-case", "key-value-pair", "semantic-version", "ip-address"]}
+[generating] {"slug": "kebab-case", "area": "kebab_case_module", "change_kind": "new_public_api"}
+[local_step] {"step": "impl", "round": 0, "ok": true}
+[local_step] {"step": "tests", "error": "model call failed: timed out"}
+[attempt] {"slug": "kebab-case", "attempt": 0, "valid": false, "problems": ["no new test file", "TASK_INSTRUCTION.md missing or too short"]}

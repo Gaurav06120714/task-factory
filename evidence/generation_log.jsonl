@@ -145,3 +145,53 @@
 {"t": "2026-11-27T19:35:54", "event": "proposed", "count": 6, "slugs": ["human-readable-size", "kebab-case", "key-value-pair", "kebab-case", "semver", "ip-address"]}
 {"t": "2026-11-27T19:35:57", "event": "proposal_rejected", "slug": "kebab-case", "reason": "duplicate slug"}
 {"t": "2026-11-27T19:35:58", "event": "generating", "slug": "human-readable-size", "area": "human_readable_size", "change_kind": "new_public_api"}
+{"t": "2026-11-27T19:36:44", "event": "proposal_rejected", "slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+{"t": "2026-11-27T19:36:47", "event": "proposal_rejected", "slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+{"t": "2026-11-27T19:36:51", "event": "proposal_rejected", "slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+{"t": "2026-11-27T19:36:59", "event": "proposed", "count": 4, "slugs": ["kebab-case", "key-value-pair", "semantic-version", "ip-address"]}
+{"t": "2026-11-27T19:37:02", "event": "generating", "slug": "kebab-case", "area": "kebab_case_module", "change_kind": "new_public_api"}
+{"t": "2026-11-27T19:37:19", "event": "local_step", "step": "impl", "round": 0, "ok": true}
+{"t": "2026-11-27T19:52:19", "event": "local_step", "step": "tests", "error": "model call failed: timed out"}
+{"t": "2026-11-27T19:52:19", "event": "attempt", "slug": "kebab-case", "attempt": 0, "valid": false, "problems": ["no new test file", "TASK_INSTRUCTION.md missing or too short"]}
+{"t": "2026-11-27T20:17:53", "event": "proposal_rejected", "slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+{"t": "2026-11-27T20:17:57", "event": "proposal_rejected", "slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+{"t": "2026-11-27T20:18:01", "event": "proposal_rejected", "slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+{"t": "2026-11-27T20:18:15", "event": "proposed", "count": 4, "slugs": ["kebab-case", "key-value-pairs", "semver", "ip-address"]}
+{"t": "2026-11-27T20:18:18", "event": "generating", "slug": "kebab-case", "area": "kebab_case_module", "change_kind": "new_public_api"}
+{"t": "2026-11-27T20:18:34", "event": "local_step", "step": "impl", "round": 0, "ok": true}
+{"t": "2026-11-27T20:19:13", "event": "local_step", "step": "tests", "round": 0, "ok": false}
+{"t": "2026-11-27T20:19:59", "event": "local_step", "step": "tests", "round": 1, "ok": false}
+{"t": "2026-11-27T20:20:34", "event": "local_step", "step": "tests", "round": 2, "ok": false}
+{"t": "2026-11-27T20:20:34", "event": "local_step", "step": "drop_failing", "tests_left": 0}
+{"t": "2026-11-27T20:20:34", "event": "attempt", "slug": "kebab-case", "attempt": 0, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+{"t": "2026-11-27T20:20:35", "event": "local_step", "step": "tests", "round": 0, "ok": false}
+{"t": "2026-11-27T20:21:14", "event": "local_step", "step": "tests", "round": 1, "ok": false}
+{"t": "2026-11-27T20:21:55", "event": "local_step", "step": "tests", "round": 2, "ok": false}
+{"t": "2026-11-27T20:21:55", "event": "local_step", "step": "drop_failing", "tests_left": 0}
+{"t": "2026-11-27T20:21:55", "event": "attempt", "slug": "kebab-case", "attempt": 1, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+{"t": "2026-11-27T20:21:55", "event": "local_step", "step": "tests", "round": 0, "ok": false}
+{"t": "2026-11-27T20:22:35", "event": "local_step", "step": "tests", "round": 1, "ok": false}
+{"t": "2026-11-27T20:23:16", "event": "local_step", "step": "tests", "round": 2, "ok": false}
+{"t": "2026-11-27T20:23:16", "event": "local_step", "step": "drop_failing", "tests_left": 0}
+{"t": "2026-11-27T20:23:16", "event": "attempt", "slug": "kebab-case", "attempt": 2, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+{"t": "2026-11-27T20:23:16", "event": "result", "slug": "kebab-case", "valid": false, "attempts": null, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+{"t": "2026-11-27T20:23:16", "event": "generating", "slug": "key-value-pairs", "area": "key_value_pairs", "change_kind": "new_public_api"}
+{"t": "2026-11-27T20:23:36", "event": "local_step", "step": "impl", "round": 0, "ok": true}
+{"t": "2026-11-27T20:23:59", "event": "local_step", "step": "tests", "round": 0, "ok": false}
+{"t": "2026-11-27T20:24:24", "event": "local_step", "step": "tests", "round": 1, "ok": false}
+{"t": "2026-11-27T20:24:42", "event": "local_step", "step": "tests", "round": 2, "ok": false}
+{"t": "2026-11-27T20:24:42", "event": "local_step", "step": "drop_failing", "tests_left": 0}
+{"t": "2026-11-27T20:24:42", "event": "attempt", "slug": "key-value-pairs", "attempt": 0, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+{"t": "2026-11-27T20:24:42", "event": "local_step", "step": "tests", "round": 0, "ok": false}
+{"t": "2026-11-27T20:25:07", "event": "local_step", "step": "tests", "round": 1, "ok": false}
+{"t": "2026-11-27T20:25:25", "event": "local_step", "step": "tests", "round": 2, "ok": false}
+{"t": "2026-11-27T20:25:25", "event": "local_step", "step": "drop_failing", "tests_left": 0}
+{"t": "2026-11-27T20:25:25", "event": "attempt", "slug": "key-value-pairs", "attempt": 1, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+{"t": "2026-11-27T20:25:25", "event": "local_step", "step": "tests", "round": 0, "ok": false}
+{"t": "2026-11-27T20:25:43", "event": "local_step", "step": "tests", "round": 1, "ok": false}
+{"t": "2026-11-27T20:26:15", "event": "local_step", "step": "tests", "round": 2, "ok": false}
+{"t": "2026-11-27T20:26:15", "event": "local_step", "step": "drop_failing", "tests_left": 0}
+{"t": "2026-11-27T20:26:15", "event": "attempt", "slug": "key-value-pairs", "attempt": 2, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+{"t": "2026-11-27T20:26:15", "event": "result", "slug": "key-value-pairs", "valid": false, "attempts": null, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+{"t": "2026-11-27T20:26:15", "event": "generating", "slug": "semver", "area": "click_semver", "change_kind": "new_public_api"}
+{"t": "2026-11-27T20:26:56", "event": "local_step", "step": "impl", "round": 0, "ok": true}
