@@ -1,0 +1,6 @@
+[proposed] {"count": 6, "slugs": ["byte-size", "delimited-list", "key-value-pairs", "aligned-table", "semantic-version", "ip-address"]}
+[generating] {"slug": "byte-size", "area": "byte_size", "change_kind": "new_public_api"}
+[local_step] {"step": "impl", "round": 0, "ok": false}
+[local_step] {"step": "impl_error", "error": "src/click/byte_size.py:28:22: undefined name 't'"}
+[local_step] {"step": "impl", "round": 1, "ok": false}
+[local_step] {"step": "impl_error", "error": "src/click/byte_size.py:21:22: undefined name 't'"}

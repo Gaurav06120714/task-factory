@@ -29,7 +29,7 @@ that defines them, e.g. `from .types import ParamType` and `from .core import Co
 A ParamType reports bad input with `self.fail(message, param, ctx)` inside `convert()`.
 Keep it simple: set `name`, implement `convert()` (and `__repr__`); do NOT add `to_info_dict` or TypedDicts."""
 # Imports the factory adds when the model forgets them (stdlib and click names are automatic).
-auto_imports = { _ = "from gettext import gettext as _" }
+auto_imports = { _ = "from gettext import gettext as _", t = "import typing as t" }
 # Feature themes for the local model, which cannot brainstorm varied ideas on its own.
 # One line each; the model writes the actual feature spec, code, tests and requirement doc.
 local_themes = [
