@@ -1,0 +1,4 @@
+[proposed] {"count": 6, "slugs": ["byte-size", "list-splitter", "key-value-pair", "text-table", "semantic-version", "ip-address"]}
+[generating] {"slug": "byte-size", "area": "click_byte_size", "change_kind": "new_public_api"}
+[local_step] {"step": "impl", "round": 0, "ok": false}
+[local_step] {"step": "impl", "round": 1, "ok": false}

@@ -25,10 +25,10 @@ CTX = int(os.environ.get("TF_OLLAMA_CTX", "32768"))
 MAX_FILE_CHARS = 60_000
 
 
-def chat(prompt: str, json_mode: bool = False, timeout: int = 1800) -> str:
+def chat(prompt: str, json_mode: bool = False, timeout: int = 1800, temperature: float = 0.2) -> str:
     body = {"model": MODEL, "stream": False,
             "messages": [{"role": "user", "content": prompt}],
-            "options": {"num_ctx": CTX, "temperature": 0.2}}
+            "options": {"num_ctx": CTX, "temperature": temperature}}
     if json_mode:
         body["format"] = "json"
     req = urllib.request.Request(f"{URL}/api/chat", data=json.dumps(body).encode(),
@@ -39,31 +39,9 @@ def chat(prompt: str, json_mode: bool = False, timeout: int = 1800) -> str:
 
 # ---------------------------------------------------------------- repo context
 
-OUTLINE_RE = re.compile(r"^\s*(class |def |async def |export |function |struct |namespace )")
-
-
-def source_files(cfg: dict, repo: Path) -> list[Path]:
-    exts = {".py", ".ts", ".js", ".cpp", ".h", ".hpp"}
-    out = []
-    for p in cfg["source_paths"]:
-        base = repo / p
-        if base.is_dir():
-            out += sorted(f for f in base.rglob("*") if f.suffix in exts)
-    return out
-
-
-def outline(cfg: dict, repo: Path) -> str:
-    """Signature lines of every source file, so the model can see the repo's shape."""
-    parts = []
-    for f in source_files(cfg, repo):
-        sigs = [l.rstrip() for l in f.read_text(errors="ignore").splitlines() if OUTLINE_RE.match(l)]
-        parts.append(f"## {f.relative_to(repo)}\n" + "\n".join(sigs[:80]))
-    return "\n\n".join(parts)
-
-
-
 FENCE_RE = re.compile(r"^\s*```[\w+-]*\n(.*?)\n?```\s*$", re.S)
 MIN_TESTS = 3
+TEMPS = (0.2, 0.6, 0.9)
 
 
 def unfence(body: str) -> str:
@@ -122,9 +100,10 @@ Feature: {title}
 Write the complete new module {mod_path}. It must define `{symbol}`, be self-contained
 (standard library plus {name}'s own API), follow the library's style (type hints, docstrings)
 and reject bad input with clear errors and exact messages. The factory exports it as {name}.{symbol}.
+{local_impl_hint}
 {ex}
-{name} API outline:
-{outline}
+Where {name}'s public names live (import ONLY names listed here):
+{api}
 
 Reply with ONLY the content of {mod_path}."""
 
@@ -180,13 +159,13 @@ def run(cfg: dict, repo: Path, env: dict, proposal: dict, test_file: str, rounds
     """Build the feature in the worktree step by step. problems: validator feedback from a
     previous attempt; then only the tests and the instruction are redone."""
     ex = example(cfg)
-    f = {**cfg, **proposal, "mod_path": cfg["new_module"].format(module=proposal["module"]),
+    f = {"local_impl_hint": "", **cfg, **proposal, "mod_path": cfg["new_module"].format(module=proposal["module"]),
          "test_path": f"{cfg['test_dir']}/{test_file}"}
     mod, test = repo / f["mod_path"], repo / f["test_path"]
 
-    def ask(step: str, prompt: str) -> str | None:
-        try:
-            return unfence(chat(prompt, timeout=900))
+    def ask(step: str, prompt: str, round_: int = 0) -> str | None:
+        try:  # each retry samples hotter, so the model does not repeat the same mistake
+            return unfence(chat(prompt, timeout=900, temperature=TEMPS[min(round_, len(TEMPS) - 1)]))
         except (TimeoutError, OSError) as e:  # a slow reply is a failed round, not a dead task
             log("local_step", step=step, error=f"model call failed: {e}")
             return None
@@ -194,9 +173,10 @@ def run(cfg: dict, repo: Path, env: dict, proposal: dict, test_file: str, rounds
     if problems is None:  # 1. implementation
         export = repo / cfg["export_file"]
         export.write_text(export.read_text() + cfg["export_line"].format(**f) + "\n")
-        prompt = IMPL.format(**f, ex=ex["code"], outline=outline(cfg, repo)[:12000])
+        api = "\n".join(l for l in export.read_text().splitlines() if "import" in l)
+        prompt = IMPL.format(**f, ex=ex["code"], api=api)
         for i in range(rounds + 1):
-            if (code := ask("impl", prompt)) is None:
+            if (code := ask("impl", prompt, i)) is None:
                 continue
             mod.parent.mkdir(parents=True, exist_ok=True)
             mod.write_text(code)
@@ -204,7 +184,10 @@ def run(cfg: dict, repo: Path, env: dict, proposal: dict, test_file: str, rounds
             log("local_step", step="impl", round=i, ok=ok)
             if ok:
                 break
-            prompt = IMPL.format(**f, ex="", outline="") + f"\n\nYour previous version:\n{code}\nIt failed:\n{out}\nFix it."
+            error = next((l for l in reversed(out.splitlines()) if l.strip()), out)
+            log("local_step", step="impl_error", error=error[:300])
+            prompt = (f"IMPORTANT: a previous attempt failed with this error, avoid it:\n{error}\n\n"
+                      + IMPL.format(**f, ex=ex["code"], api=api))
         else:
             return
 
@@ -230,7 +213,7 @@ def run(cfg: dict, repo: Path, env: dict, proposal: dict, test_file: str, rounds
                 return
             test.write_text(kept)
             break
-        fixed = ask("fix_tests", FIX_TESTS.format(**f, impl=impl, tests=test.read_text(),
+        fixed = ask("fix_tests", round_=i, prompt=FIX_TESTS.format(**f, impl=impl, tests=test.read_text(),
                                                   problems="\n".join(issues) + "\n" + out))
         if fixed:
             test.write_text(fixed)
