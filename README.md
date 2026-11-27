@@ -2,6 +2,8 @@
 
 Turns a repository into validated Harbor 0.25 feature-development task packages.
 
+Demo video (4 min): https://youtu.be/D5n077Zlf_0
+
 ## Results (27 Nov 2026)
 | Task | fail_to_pass | pass_to_pass | nop | oracle | mutants killed | made by |
 |---|---|---|---|---|---|---|
