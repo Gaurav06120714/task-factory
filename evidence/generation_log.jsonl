@@ -132,3 +132,13 @@
 {"t": "2026-11-27T19:29:05", "event": "result", "slug": "byte-size", "valid": true, "attempts": 1, "problems": []}
 {"t": "2026-11-27T19:29:05", "event": "generating", "slug": "list-splitter", "area": "list_splitter", "change_kind": "new_public_api"}
 {"t": "2026-11-27T19:29:24", "event": "local_step", "step": "impl", "round": 0, "ok": true}
+{"t": "2026-11-27T19:29:56", "event": "proposed", "count": 1, "slugs": ["byte-size"]}
+{"t": "2026-11-27T19:29:57", "event": "generating", "slug": "byte-size", "area": "byte_size", "change_kind": "new_public_api"}
+{"t": "2026-11-27T19:30:25", "event": "local_step", "step": "impl", "round": 0, "ok": true}
+{"t": "2026-11-27T19:31:08", "event": "local_step", "step": "tests", "round": 0, "ok": false}
+{"t": "2026-11-27T19:31:57", "event": "local_step", "step": "tests", "round": 1, "ok": false}
+{"t": "2026-11-27T19:32:44", "event": "local_step", "step": "tests", "round": 2, "ok": false}
+{"t": "2026-11-27T19:32:44", "event": "local_step", "step": "drop_failing", "tests_left": 7}
+{"t": "2026-11-27T19:33:28", "event": "local_step", "step": "instruction", "round": 0, "ok": true}
+{"t": "2026-11-27T19:33:43", "event": "attempt", "slug": "byte-size", "attempt": 0, "valid": true, "problems": []}
+{"t": "2026-11-27T19:33:43", "event": "result", "slug": "byte-size", "valid": true, "attempts": 1, "problems": []}

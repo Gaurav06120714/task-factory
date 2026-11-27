@@ -234,9 +234,11 @@ def propose(cfg: dict, n: int) -> list[dict]:
             text = claude(prompt, repo, ["Read", "Glob", "Grep"])["result"]
         else:  # small local model: one new exported module per feature (see local_llm)
             api = "\n".join(l for l in (repo / cfg["export_file"]).read_text().splitlines() if "import" in l)
-            text = local_llm.chat(PROPOSE_LOCAL.format(**{**cfg, "n": n + 2, "existing": listing, "api": api,
-                                  "themes": "\n".join(f"- {t}" for t in cfg.get("local_themes", []))}),
-                                  json_mode=True)
+            # one call per theme: asked for a list, the 7B model sometimes returns a single item
+            text = json.dumps([p for theme in cfg.get("local_themes", [])
+                               for p in parse_json_array(local_llm.chat(PROPOSE_LOCAL.format(
+                                   **{**cfg, "existing": listing, "api": api, "themes": f"- {theme}"}),
+                                   json_mode=True))[:1]])
     proposals = parse_json_array(text)
     if BACKEND != "claude":
         for p in proposals:

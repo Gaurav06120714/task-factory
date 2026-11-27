@@ -1,0 +1,25 @@
+[proposed] {"count": 1, "slugs": ["byte-size"]}
+[generating] {"slug": "byte-size", "area": "byte_size", "change_kind": "new_public_api"}
+[local_step] {"step": "impl", "round": 0, "ok": true}
+[local_step] {"step": "tests", "round": 0, "ok": false}
+[local_step] {"step": "tests", "round": 1, "ok": false}
+[local_step] {"step": "tests", "round": 2, "ok": false}
+[local_step] {"step": "drop_failing", "tests_left": 7}
+[local_step] {"step": "instruction", "round": 0, "ok": true}
+[attempt] {"slug": "byte-size", "attempt": 0, "valid": true, "problems": []}
+[result] {"slug": "byte-size", "valid": true, "attempts": 1, "problems": []}
+[
+  {
+    "slug": "byte-size",
+    "valid": true,
+    "attempts": 1,
+    "task": "click-byte-size",
+    "base_commit": "cf19179e8e2fd54c601378cec9e0d21bb12b6fb1",
+    "image": "taskfactory-click:cf19179e8e2f-76901cb4be",
+    "fail_to_pass": 16,
+    "pass_to_pass": 2434,
+    "nop_reward": 0.0,
+    "oracle_reward": 1.0,
+    "problems": []
+  }
+]

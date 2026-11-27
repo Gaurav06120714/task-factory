@@ -171,7 +171,8 @@ Tests:
 Specify precisely: that it is available as {name}.{symbol} (do not say which file it lives in);
 its signature; behaviour for normal input and for every edge case the tests check; every exact
 error message or output the tests check (quote them). Use markdown headings and bullet lists.
-Describe ONLY behaviour this implementation really has: read the code, and check every example,
+Copy every message exactly as the tests expect it, including its quote characters (Python repr
+uses single quotes). Describe ONLY behaviour this implementation really has: read the code, and check every example,
 accepted format and unit you mention against it. Do NOT include code from the implementation
 and do not mention test files.
 

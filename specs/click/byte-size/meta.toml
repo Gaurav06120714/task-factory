@@ -1,0 +1,6 @@
+title = "Parse human-readable byte sizes into integers"
+area = "byte_size"
+change_kind = "new_public_api"
+difficulty = "medium"
+tags = ["byte size", "human-readable", "integer conversion"]
+generated_by = "ollama/qwen2.5-coder:7b"
