@@ -1,0 +1,3 @@
+[proposed] {"count": 6, "slugs": ["human-readable-size", "kebab-case", "key-value-pair", "kebab-case", "semver", "ip-address"]}
+[proposal_rejected] {"slug": "kebab-case", "reason": "duplicate slug"}
+[generating] {"slug": "human-readable-size", "area": "human_readable_size", "change_kind": "new_public_api"}

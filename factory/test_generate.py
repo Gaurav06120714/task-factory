@@ -91,3 +91,9 @@ def test_proposal_filter():
     kept = generate.filter_proposals(CFG, props, existing)
     assert [p["slug"] for p in kept] == ["b", "g"]
     assert kept[1]["area"] == "parser"
+
+
+def test_on_theme():
+    theme = "a parameter type that splits a delimited list such as a,b,c"
+    assert generate.on_theme(theme, {"slug": "list-splitter", "summary": "Splits a delimited value"})
+    assert not generate.on_theme(theme, {"slug": "kebab-case", "summary": "Converts a string to kebab-case"})

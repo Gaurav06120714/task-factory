@@ -17,6 +17,7 @@ Guardrails (each rejection is logged to evidence/generation_log.jsonl):
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -224,6 +225,17 @@ def filter_proposals(cfg: dict, proposals: list[dict], existing: list[dict]) -> 
     return kept
 
 
+GENERIC = {"parameter", "type", "that", "such", "with", "into", "from", "helper", "clear", "errors",
+           "input", "value", "values", "using", "another", "every", "string", "strings", "module"}
+
+
+def on_theme(theme: str, proposal: dict) -> bool:
+    """The proposal shares at least one distinctive word with its theme."""
+    words = lambda t: {w for w in re.findall(r"[a-z]{4,}", t.lower()) if w not in GENERIC}
+    text = " ".join(str(proposal.get(k, "")) for k in ("slug", "title", "summary"))
+    return bool(words(theme) & words(text))
+
+
 def propose(cfg: dict, n: int) -> list[dict]:
     existing = existing_tasks(cfg)
     listing = "\n".join(f"- {e['slug']}: {e['title']} [area={e['area']}, change_kind={e['change_kind']}]"
@@ -234,11 +246,19 @@ def propose(cfg: dict, n: int) -> list[dict]:
             text = claude(prompt, repo, ["Read", "Glob", "Grep"])["result"]
         else:  # small local model: one new exported module per feature (see local_llm)
             api = "\n".join(l for l in (repo / cfg["export_file"]).read_text().splitlines() if "import" in l)
-            # one call per theme: asked for a list, the 7B model sometimes returns a single item
-            text = json.dumps([p for theme in cfg.get("local_themes", [])
-                               for p in parse_json_array(local_llm.chat(PROPOSE_LOCAL.format(
-                                   **{**cfg, "existing": listing, "api": api, "themes": f"- {theme}"}),
-                                   json_mode=True))[:1]])
+            used = {e.get("theme") for e in existing}
+            picked = []
+            for theme in cfg.get("local_themes", []):
+                if theme in used:
+                    continue
+                for _ in range(3):  # one call per theme; retry when the 7B model drifts off-theme
+                    got = parse_json_array(local_llm.chat(PROPOSE_LOCAL.format(
+                        **{**cfg, "existing": listing, "api": api, "themes": f"- {theme}"}), json_mode=True))
+                    if got and on_theme(theme, got[0]):
+                        picked.append({**got[0], "theme": theme})
+                        break
+                    log("proposal_rejected", slug=got[0].get("slug") if got else None, reason=f"off theme: {theme}")
+            text = json.dumps(picked)
     proposals = parse_json_array(text)
     if BACKEND != "claude":
         for p in proposals:
@@ -325,6 +345,8 @@ def extract_spec(cfg: dict, repo: Path, proposal: dict, test_file: str, spec_dir
         shutil.copy(repo / t, dest)
     (spec_dir / "instruction.md").write_text(instruction)
     meta = {k: proposal.get(k) for k in ("title", "area", "change_kind", "difficulty")}
+    if proposal.get("theme"):
+        meta["theme"] = proposal["theme"]
     (spec_dir / "meta.toml").write_text(
         "".join(f"{k} = {json.dumps(v or 'medium')}\n" for k, v in meta.items())
         + f"tags = {json.dumps(proposal.get('tags', []))}\n"

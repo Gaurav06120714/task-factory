@@ -4,3 +4,4 @@ change_kind = "new_public_api"
 difficulty = "medium"
 tags = ["byte size", "human-readable", "integer conversion"]
 generated_by = "ollama/qwen2.5-coder:7b"
+theme = "a parameter type that parses human-readable byte sizes such as 10KB, 1.5MiB or 2G into an int"
