@@ -1,0 +1,61 @@
+[proposed] {"count": 6, "slugs": ["add-progress-bar-with-custom-format", "add-support-for-custom-ansi-colors", "add-option-to-disable-progress-bar", "add-support-for-custom-editor", "add-option-to-clear-terminal", "add-support-for-custom-pager"]}
+[proposal_rejected] {"slug": "add-support-for-custom-editor", "reason": "names files that do not exist: ['src/click/editors.py']"}
+[proposal_rejected] {"slug": "add-option-to-clear-terminal", "reason": "area+change_kind ('core', 'new_option_or_parameter') already covered"}
+[proposal_rejected] {"slug": "add-support-for-custom-pager", "reason": "area+change_kind ('termui', 'new_public_api') already covered"}
+[generating] {"slug": "add-progress-bar-with-custom-format", "area": "termui", "change_kind": "new_public_api"}
+[local_round] {"round": 0, "error": "model call failed: timed out"}
+[local_round] {"round": 1, "blocks": 8, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 2, "blocks": 4, "edit_problems": 2, "new_tests_pass": false, "suite_pass": false}
+[attempt] {"slug": "add-progress-bar-with-custom-format", "attempt": 0, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+[local_round] {"round": 0, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 1, "blocks": 3, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 2, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[attempt] {"slug": "add-progress-bar-with-custom-format", "attempt": 1, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+[local_round] {"round": 0, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 1, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 2, "blocks": 3, "edit_problems": 1, "new_tests_pass": false, "suite_pass": false}
+[attempt] {"slug": "add-progress-bar-with-custom-format", "attempt": 2, "valid": false, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+[result] {"slug": "add-progress-bar-with-custom-format", "valid": false, "attempts": null, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
+[generating] {"slug": "add-support-for-custom-ansi-colors", "area": "utils", "change_kind": "new_public_api"}
+[local_round] {"round": 0, "blocks": 5, "edit_problems": 3, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 1, "blocks": 3, "edit_problems": 1, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 2, "blocks": 1, "edit_problems": 1, "new_tests_pass": false, "suite_pass": false}
+[attempt] {"slug": "add-support-for-custom-ansi-colors", "attempt": 0, "valid": false, "problems": ["new test not passing with reference patch: tests.test_custom_color::test_custom_color", "new test not passing with reference patch: tests.test_custom_color::test_custom_color_invalid", "no fail_to_pass tests f
+[local_round] {"round": 0, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 1, "blocks": 2, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 2, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[attempt] {"slug": "add-support-for-custom-ansi-colors", "attempt": 1, "valid": false, "problems": ["new test not passing with reference patch: tests.test_custom_color::test_custom_color", "new test not passing with reference patch: tests.test_custom_color::test_custom_color_invalid", "no fail_to_pass tests f
+[local_round] {"round": 0, "blocks": 2, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 1, "blocks": 2, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 2, "blocks": 2, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[attempt] {"slug": "add-support-for-custom-ansi-colors", "attempt": 2, "valid": false, "problems": ["new test not passing with reference patch: tests.test_custom_color::test_custom_color", "new test not passing with reference patch: tests.test_custom_color::test_custom_color_invalid", "no fail_to_pass tests f
+[result] {"slug": "add-support-for-custom-ansi-colors", "valid": false, "attempts": null, "problems": ["new test not passing with reference patch: tests.test_custom_color::test_custom_color", "new test not passing with reference patch: tests.test_custom_color::test_custom_color_invalid", "no fail_to_pass tes
+[generating] {"slug": "add-option-to-disable-progress-bar", "area": "core", "change_kind": "new_option_or_parameter"}
+[error] {"slug": "add-option-to-disable-progress-bar", "error": "Command '['git', 'worktree', 'add', '-q', '--detach', '/var/folders/cv/gn7w367j6d558bt7smtv5zmw0000gn/T/tf-click-dejxa8vl', 'cf19179e8e2fd54c601378cec9e0d21bb12b6fb1']' returned non-zero exit status 128."}
+[result] {"slug": "add-option-to-disable-progress-bar", "valid": false, "attempts": null, "problems": ["Command '['git', 'worktree', 'add', '-q', '--detach', '/var/folders/cv/gn7w367j6d558bt7smtv5zmw0000gn/T/tf-click-dejxa8vl', 'cf19179e8e2fd54c601378cec9e0d21bb12b6fb1']' returned non-zero exit status 128."]
+[
+  {
+    "slug": "add-progress-bar-with-custom-format",
+    "valid": false,
+    "problems": [
+      "TASK_INSTRUCTION.md missing or too short"
+    ]
+  },
+  {
+    "slug": "add-support-for-custom-ansi-colors",
+    "valid": false,
+    "problems": [
+      "new test not passing with reference patch: tests.test_custom_color::test_custom_color",
+      "new test not passing with reference patch: tests.test_custom_color::test_custom_color_invalid",
+      "no fail_to_pass tests found",
+      "oracle reward 0.0 (want 1.0)"
+    ]
+  },
+  {
+    "slug": "add-option-to-disable-progress-bar",
+    "valid": false,
+    "problems": [
+      "Command '['git', 'worktree', 'add', '-q', '--detach', '/var/folders/cv/gn7w367j6d558bt7smtv5zmw0000gn/T/tf-click-dejxa8vl', 'cf19179e8e2fd54c601378cec9e0d21bb12b6fb1']' returned non-zero exit status 128."
+    ]
+  }
+]

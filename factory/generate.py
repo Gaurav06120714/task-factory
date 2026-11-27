@@ -58,7 +58,12 @@ def clone(cfg: dict) -> Path:
 def worktree(cfg: dict):
     src = clone(cfg)
     tmp = Path(tempfile.mkdtemp(prefix=f"tf-{cfg['name']}-"))
-    git("worktree", "add", "-q", "--detach", str(tmp), cfg["base_commit"], cwd=src)
+    git("worktree", "prune", cwd=src)  # drop stale entries left by a crashed run
+    try:
+        git("worktree", "add", "-q", "--detach", str(tmp), cfg["base_commit"], cwd=src)
+    except Exception:
+        shutil.rmtree(tmp, ignore_errors=True)
+        raise
     try:
         yield tmp
     finally:
