@@ -135,13 +135,17 @@ Reply with ONLY a JSON array, no prose. Each element:
 
 PROPOSE_LOCAL = """You are designing feature tasks for evaluating AI coding agents on the {name} library ({language}).
 
-Propose {n} NEW, small, useful features. Each is ONE new public class or function in its own new
-module, exported as {name}.<Symbol>. Shapes that work well:
-- a parameter type that parses and validates a command-line value (like IntRange or DateTime)
-- a pure helper that formats or parses text for command-line output
+Propose exactly one feature for EACH theme below, in order. Each is ONE new public class or
+function in its own new module, exported as {name}.<Symbol>. Make each concrete: exact inputs,
+outputs, accepted formats, edge cases and error messages.
+Themes:
+{themes}
 
-Rules: not already in {name} (its public API is below); 30-120 lines; standard library only;
-deterministic and testable offline with no terminal input; every idea different in behaviour.
+Rules: genuinely useful to people writing command-line apps with {name}; not already in {name}
+(its public API is below); 40-120 lines with real logic (validation, parsing rules, edge cases);
+standard library only; deterministic and testable offline with no terminal input; every idea
+different in behaviour. NOT trivial string helpers (case conversion, reversing, padding).
+Every proposal MUST include both "module" and "symbol".
 Already taken:
 {existing}
 
@@ -230,11 +234,14 @@ def propose(cfg: dict, n: int) -> list[dict]:
             text = claude(prompt, repo, ["Read", "Glob", "Grep"])["result"]
         else:  # small local model: one new exported module per feature (see local_llm)
             api = "\n".join(l for l in (repo / cfg["export_file"]).read_text().splitlines() if "import" in l)
-            text = local_llm.chat(PROPOSE_LOCAL.format(**{**cfg, "n": n * 2, "existing": listing, "api": api}),
+            text = local_llm.chat(PROPOSE_LOCAL.format(**{**cfg, "n": n + 2, "existing": listing, "api": api,
+                                  "themes": "\n".join(f"- {t}" for t in cfg.get("local_themes", []))}),
                                   json_mode=True)
     proposals = parse_json_array(text)
     if BACKEND != "claude":
         for p in proposals:
+            if not str(p.get("module", "")).isidentifier():  # 7B often drops or hyphenates it
+                p["module"] = str(p.get("slug", "")).replace("-", "_")
             p.update(area=p.get("module"), change_kind="new_public_api",
                      new_symbols=[p.get("symbol")], files=[])
     log("proposed", count=len(proposals), slugs=[p.get("slug") for p in proposals])
