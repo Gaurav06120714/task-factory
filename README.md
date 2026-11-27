@@ -8,6 +8,7 @@ repos/<name>.toml          everything repo-specific (url, base_commit, test_cmd,
 specs/<repo>/<slug>/       one task spec: instruction.md, solution.patch, feature/ tests, meta.toml
 factory/build.py           spec -> Harbor package, validated in the task's own Docker image
 factory/grade.py           grader shipped inside every task (stdlib only)
+factory/mutate.py          mutation testing of a spec's feature tests
 tasks/                     generated Harbor task packages
 evidence/                  per-task logs, JUnit XML, validation reports
 work/                      repo clones (not committed)
@@ -33,7 +34,7 @@ The regression list (`pass_to_pass`) is collected inside the task image, not on 
 ```bash
 .venv/bin/python -m factory.generate repos/click.toml --count 4
 ```
-The default backend is free and local: Ollama with `qwen2.5-coder:7b` (`TF_OLLAMA_MODEL`). A 7B model can't edit existing code reliably, so `factory/local_llm.py` drives it in small steps: (1) one new module, which the factory exports; (2) tests, run on the host, with failures sent back for repair and tests that still fail dropped; (3) the requirement document, written from the code and tests. With `TF_BACKEND=claude`, headless Claude Code (`claude -p`, model `TF_MODEL`, default `opus`) instead proposes features, then implements each one in a throwaway git worktree: the source change, a new test file and `TASK_INSTRUCTION.md`. Each draft has to pass these guardrails before it becomes a task:
+The default backend is free and local: Ollama with `qwen2.5-coder:7b` (`TF_OLLAMA_MODEL`). A 7B model can't edit existing code reliably, so `factory/local_llm.py` drives it in small steps: (1) one new module, which the factory exports; (2) tests: the model only picks test inputs (Python expressions) and the factory runs them against the implementation to record the expected values, because a 7B model can't predict outputs reliably; (3) the requirement document, written from the code and tests. With `TF_BACKEND=claude`, headless Claude Code (`claude -p`, model `TF_MODEL`, default `opus`) instead proposes features, then implements each one in a throwaway git worktree: the source change, a new test file and `TASK_INSTRUCTION.md`. Each draft has to pass these guardrails before it becomes a task:
 
 | Stage | Guardrail |
 |---|---|
@@ -43,6 +44,12 @@ The default backend is free and local: Ollama with `qwen2.5-coder:7b` (`TF_OLLAM
 
 Every decision is logged to `evidence/generation_log.jsonl`. Failed drafts are moved to `specs_rejected/`.
 Self-check for the non-AI path: `.venv/bin/python -m pytest -q -p no:anyio factory/test_generate.py`.
+
+## Mutation testing
+```bash
+.venv/bin/python -m factory.mutate repos/click.toml specs/click/byte-size
+```
+Applies the reference patch, then mutates only the lines it added (flipped comparisons, swapped operators, off-by-one constants, `and`/`or`, dropped `not`, `return None`). Each mutant must make the feature tests fail. Results go to `evidence/<repo>-<slug>/mutation.json`. The generator runs this on every valid Python task. Survivors are reviewed by a person; fixes are written down in `specs/<repo>/<slug>/REVIEW.md`.
 
 ## Harbor validation
 ```bash

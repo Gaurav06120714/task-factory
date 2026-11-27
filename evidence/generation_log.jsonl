@@ -195,3 +195,12 @@
 {"t": "2026-11-27T20:26:15", "event": "result", "slug": "key-value-pairs", "valid": false, "attempts": null, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
 {"t": "2026-11-27T20:26:15", "event": "generating", "slug": "semver", "area": "click_semver", "change_kind": "new_public_api"}
 {"t": "2026-11-27T20:26:56", "event": "local_step", "step": "impl", "round": 0, "ok": true}
+{"t": "2026-11-27T20:41:56", "event": "local_step", "step": "tests", "error": "model call failed: timed out"}
+{"t": "2026-11-27T20:41:57", "event": "attempt", "slug": "semver", "attempt": 0, "valid": false, "problems": ["no new test file", "TASK_INSTRUCTION.md missing or too short"]}
+{"t": "2026-11-27T20:42:46", "event": "local_step", "step": "tests", "round": 0, "ok": false}
+{"t": "2026-11-27T20:45:36", "event": "proposal_rejected", "slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+{"t": "2026-11-27T20:45:41", "event": "proposal_rejected", "slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+{"t": "2026-11-27T20:45:45", "event": "proposal_rejected", "slug": "kebab-case", "reason": "off theme: a helper that renders rows of data as an aligned plain-text table with a header line"}
+{"t": "2026-11-27T20:45:57", "event": "proposed", "count": 4, "slugs": ["kebab-case", "key-value-pairs", "semver", "ip-address"]}
+{"t": "2026-11-27T20:46:02", "event": "generating", "slug": "kebab-case", "area": "kebab_case_module", "change_kind": "new_public_api"}
+{"t": "2026-11-27T20:46:30", "event": "local_step", "step": "impl", "round": 0, "ok": true}

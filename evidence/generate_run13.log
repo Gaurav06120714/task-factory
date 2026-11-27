@@ -40,3 +40,6 @@
 [result] {"slug": "key-value-pairs", "valid": false, "attempts": null, "problems": ["TASK_INSTRUCTION.md missing or too short"]}
 [generating] {"slug": "semver", "area": "click_semver", "change_kind": "new_public_api"}
 [local_step] {"step": "impl", "round": 0, "ok": true}
+[local_step] {"step": "tests", "error": "model call failed: timed out"}
+[attempt] {"slug": "semver", "attempt": 0, "valid": false, "problems": ["no new test file", "TASK_INSTRUCTION.md missing or too short"]}
+[local_step] {"step": "tests", "round": 0, "ok": false}

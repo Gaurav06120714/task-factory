@@ -4,8 +4,11 @@ A 7B model cannot browse files, run tools or reliably edit existing code, so the
 does that for it. Each feature is ONE new module; the factory adds the export line.
 Steps, each a separate short prompt that returns one whole file:
   1. implementation  -> checked by importing it
-  2. tests           -> run on the host; failures go back to the model; tests still
-                        failing after the repair rounds are dropped (min MIN_TESTS kept)
+  2. tests           -> the model only picks test INPUTS (Python expressions); the factory
+                        runs each one against the implementation and records the real result
+                        or exact error as the expected value. A 7B model cannot predict
+                        outputs reliably; it can choose varied inputs. Mutation testing
+                        (factory/mutate.py) then measures whether those tests are strong.
   3. requirement doc -> TASK_INSTRUCTION.md, written from the code and tests
 
 Env: TF_OLLAMA_MODEL (default qwen2.5-coder:7b), TF_OLLAMA_URL, TF_OLLAMA_CTX.
@@ -15,6 +18,7 @@ import ast
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 import urllib.request
@@ -24,12 +28,14 @@ URL = os.environ.get("TF_OLLAMA_URL", "http://localhost:11434")
 MODEL = os.environ.get("TF_OLLAMA_MODEL", "qwen2.5-coder:7b")
 CTX = int(os.environ.get("TF_OLLAMA_CTX", "32768"))
 MAX_FILE_CHARS = 60_000
+MAX_TOKENS = int(os.environ.get("TF_OLLAMA_MAX_TOKENS", "4096"))
 
 
 def chat(prompt: str, json_mode: bool = False, timeout: int = 1800, temperature: float = 0.2) -> str:
     body = {"model": MODEL, "stream": False,
             "messages": [{"role": "user", "content": prompt}],
-            "options": {"num_ctx": CTX, "temperature": temperature}}
+            # num_predict: a 7B model sometimes loops forever; ~3 min at 22 tok/s, then give up
+            "options": {"num_ctx": CTX, "temperature": temperature, "num_predict": MAX_TOKENS}}
     if json_mode:
         body["format"] = "json"
     req = urllib.request.Request(f"{URL}/api/chat", data=json.dumps(body).encode(),
@@ -129,34 +135,20 @@ Where {name}'s public names live (import ONLY names listed here):
 
 Reply with ONLY the content of {mod_path}."""
 
-TESTS = """Write pytest tests for a new feature of the {name} library.
+CASES = """Choose test inputs for a new feature of the {name} library.
 
 Feature: {title}
 {summary}
 
-The implementation ({mod_path}, used as {name}.{symbol}):
+The implementation ({mod_path}, available as {name}.{symbol}):
 {impl}
-
-Write the complete test file {test_path}. Rules:
-- import {name} and use {name}.{symbol}; do not import from the module file directly.
-- every expected value must be exactly what THIS implementation returns: trace the code.
-- cover normal use, edge cases and every error (pytest.raises with match=).
-- 5 to 12 test functions, deterministic, offline, no terminal input.
-{ex}
-Reply with ONLY the content of the test file."""
-
-FIX_TESTS = """Some tests for {name}.{symbol} fail. The implementation is correct; fix the TESTS.
-
-The implementation ({mod_path}):
-{impl}
-
-Current test file {test_path}:
-{tests}
-
-Problems:
-{problems}
-
-Reply with ONLY the complete corrected test file."""
+{hint}
+Reply with a JSON object {{"cases": [...]}} holding 10 to 16 cases. Each case is
+{{"name": "short_snake_case_name", "expr": "<ONE Python expression that uses {name}.{symbol}>"}}.
+- Cover normal use, edge cases (boundaries, empty, unusual but valid input) and EVERY error the code can raise.
+- Each expr is a single expression: no statements, assignments or imports. Only `{name}` is available.
+- {local_case_hint}
+- Do NOT write expected values: the factory runs every expression and records what it returns or raises."""
 
 INSTR = """Write the requirement document for this feature of {name}, as a feature request a
 developer receives. They will NOT see the code or tests below, yet their own implementation
@@ -179,18 +171,73 @@ and do not mention test files.
 Reply with ONLY the markdown document."""
 
 
+RECORD = """import importlib, json, sys
+pkg = importlib.import_module(sys.argv[1])
+out = []
+for c in json.load(open(sys.argv[2])):
+    try:
+        v = eval(c["expr"], {sys.argv[1]: pkg})
+        out.append({"repr": repr(v)})
+    except Exception as e:
+        out.append({"module": type(e).__module__, "type": type(e).__name__, "msg": str(e)})
+print(json.dumps(out))
+"""
+
+
+def parse_cases(raw: str) -> list[dict]:
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        return []
+    cases = data.get("cases", []) if isinstance(data, dict) else data
+    seen, out = set(), []
+    for c in cases if isinstance(cases, list) else []:
+        expr = str(c.get("expr", "")).strip() if isinstance(c, dict) else ""
+        try:
+            ast.parse(expr, mode="eval")
+        except SyntaxError:
+            continue
+        if expr and expr not in seen:
+            seen.add(expr)
+            out.append({"name": re.sub(r"\W+", "_", str(c.get("name") or "case")).strip("_").lower()[:40] or "case",
+                        "expr": expr})
+    return out
+
+
+def render_tests(pkg: str, symbol: str, cases: list[dict], results: list[dict]) -> str:
+    """pytest file whose expected values are what the reference implementation really did."""
+    lines = [f'"""Tests for {pkg}.{symbol}. Inputs chosen by the generator; expected values recorded',
+             'from the reference implementation."""', "import re", "", "import pytest", "", f"import {pkg}", ""]
+    names: dict[str, int] = {}
+    for c, r in zip(cases, results):
+        if " at 0x" in r.get("repr", "") + r.get("msg", ""):
+            continue  # memory addresses are not reproducible
+        if "repr" not in r and r.get("type") == "AttributeError" and symbol in r.get("msg", ""):
+            continue  # the expression does not even reach the feature
+        n = names[c["name"]] = names.get(c["name"], 0) + 1
+        name = c["name"] + (f"_{n}" if n > 1 else "")
+        lines += ["", f"def test_{name}():"]
+        if "repr" in r:
+            lines.append(f"    assert repr({c['expr']}) == {r['repr']!r}")
+        else:
+            exc = r["type"] if r["module"] == "builtins" else (f"{pkg}.{r['type']}" if r["module"].startswith(pkg) else "Exception")
+            lines += [f"    with pytest.raises({exc}, match=re.escape({r['msg']!r})):", f"        {c['expr']}"]
+    return "\n".join(lines) + "\n"
+
+
 def run(cfg: dict, repo: Path, env: dict, proposal: dict, test_file: str, rounds: int, log,
         problems: list[str] | None = None) -> None:
     """Build the feature in the worktree step by step. problems: validator feedback from a
     previous attempt; then only the tests and the instruction are redone."""
     ex = example(cfg)
-    f = {"local_impl_hint": "", "python": sys.executable, **cfg, **proposal, "mod_path": cfg["new_module"].format(module=proposal["module"]),
+    f = {"local_impl_hint": "", "local_case_hint": "Call the feature directly with literal arguments.", "python": sys.executable, **cfg, **proposal, "mod_path": cfg["new_module"].format(module=proposal["module"]),
          "test_path": f"{cfg['test_dir']}/{test_file}"}
     mod, test = repo / f["mod_path"], repo / f["test_path"]
 
-    def ask(step: str, prompt: str, round_: int = 0) -> str | None:
+    def ask(step: str, prompt: str, round_: int = 0, json_mode: bool = False) -> str | None:
         try:  # each retry samples hotter, so the model does not repeat the same mistake
-            return unfence(chat(prompt, timeout=900, temperature=TEMPS[min(round_, len(TEMPS) - 1)]))
+            reply = chat(prompt, json_mode=json_mode, timeout=900, temperature=TEMPS[min(round_, len(TEMPS) - 1)])
+            return reply if json_mode else unfence(reply)
         except (TimeoutError, OSError) as e:  # a slow reply is a failed round, not a dead task
             log("local_step", step=step, error=f"model call failed: {e}")
             return None
@@ -220,32 +267,31 @@ def run(cfg: dict, repo: Path, env: dict, proposal: dict, test_file: str, rounds
             return
 
     impl = mod.read_text() if mod.exists() else ""
-    # 2. tests
-    if problems is None or not test.exists():
-        if (tests := ask("tests", TESTS.format(**f, impl=impl, ex=ex["tests"]))) is None:
-            return
-        test.write_text(tests)
-    issues = problems or []
+    # 2. tests: the model picks inputs, the implementation supplies the expected values
+    hint = ("Problems found in the previous attempt, avoid them:\n" + "\n".join(problems) + "\n") if problems else ""
     for i in range(rounds + 1):
+        if (raw := ask("cases", CASES.format(**f, impl=impl, hint=hint), i, json_mode=True)) is None:
+            continue
+        cases = parse_cases(raw)
+        cases_file = repo / ".tf_cases.json"
+        cases_file.write_text(json.dumps(cases))
+        ok, out = sh(f"python -c {shlex.quote(RECORD)} {cfg['name']} {cases_file}", repo, env)
+        cases_file.unlink()
+        try:
+            results = json.loads(out.strip().splitlines()[-1]) if ok else []
+        except (json.JSONDecodeError, IndexError):
+            results = []
+        test.write_text(render_tests(cfg["name"], proposal["symbol"], cases, results))
         ok, out = sh(cfg["host_test_cmd"].format(path=f["test_path"]), repo, env)
-        log("local_step", step="tests", round=i, ok=ok and not issues)
-        if ok and not issues:
-            break
-        if i == rounds:  # last resort: keep only the tests that pass
-            try:
-                kept, left = drop_failing(test.read_text(), out)
-            except SyntaxError:
-                return
-            log("local_step", step="drop_failing", tests_left=left)
-            if left < MIN_TESTS:
-                return
+        if not ok:  # e.g. output that changes between runs: drop those tests
+            kept, _ = drop_failing(test.read_text(), out)
             test.write_text(kept)
+        left = test.read_text().count("\ndef test_")
+        log("local_step", step="tests", round=i, cases=len(cases), recorded=len(results), tests=left)
+        if left >= MIN_TESTS:
             break
-        fixed = ask("fix_tests", round_=i, prompt=FIX_TESTS.format(**f, impl=impl, tests=test.read_text(),
-                                                  problems="\n".join(issues) + "\n" + out))
-        if fixed:
-            test.write_text(fixed)
-        issues = []
+    else:
+        return
 
     # 3. requirement document
     for i in range(rounds + 1):
@@ -272,6 +318,14 @@ def _selfcheck() -> None:
                                 {"_": "from gettext import gettext as _"})
     assert fixed.splitlines()[1:4] == ["import re", "from gettext import gettext as _",
                                        "from .types import ParamType"], fixed
+    cases = parse_cases('{"cases": [{"name": "Parses KB!", "expr": "click.X().convert(\'1K\', None, None)"},'
+                        '{"name": "bad", "expr": "click.X().convert(\'?\', None, None)"}, {"name": "dup", "expr": "x ="}]}')
+    assert [c["name"] for c in cases] == ["parses_kb", "bad"], cases
+    body = render_tests("click", "X", cases, [{"repr": "1024"},
+                        {"module": "click.exceptions", "type": "BadParameter", "msg": "'?' is bad."}])
+    assert "assert repr(click.X().convert('1K', None, None)) == '1024'" in body, body
+    assert "pytest.raises(click.BadParameter, match=re.escape(\"'?' is bad.\"))" in body, body
+    ast.parse(body)
     print("local_llm selfcheck ok")
 
 

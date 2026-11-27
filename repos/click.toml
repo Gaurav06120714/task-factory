@@ -28,6 +28,10 @@ local_impl_hint = """Inside the package, import click's own pieces with relative
 that defines them, e.g. `from .types import ParamType` and `from .core import Context, Parameter`.
 A ParamType reports bad input with `self.fail(message, param, ctx)` inside `convert()`.
 Keep it simple: set `name`, implement `convert()` (and `__repr__`); do NOT add `to_info_dict` or TypedDicts."""
+# How the local model should call a feature when it picks test inputs.
+local_case_hint = """For a parameter type call convert directly, e.g. click.ByteSize().convert('10K', None, None),
+and include constructor options, e.g. click.ByteSize(max=1024).convert('2K', None, None).
+For a helper function call it with literal arguments."""
 # Imports the factory adds when the model forgets them (stdlib and click names are automatic).
 auto_imports = { _ = "from gettext import gettext as _", t = "import typing as t" }
 # Feature themes for the local model, which cannot brainstorm varied ideas on its own.
