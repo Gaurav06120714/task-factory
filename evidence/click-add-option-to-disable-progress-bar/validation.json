@@ -1,0 +1,15 @@
+{
+  "task": "click-add-option-to-disable-progress-bar",
+  "base_commit": "cf19179e8e2fd54c601378cec9e0d21bb12b6fb1",
+  "image": "taskfactory-click:cf19179e8e2f-76901cb4be",
+  "fail_to_pass": 0,
+  "pass_to_pass": 2434,
+  "nop_reward": 0.0,
+  "oracle_reward": 0.0,
+  "valid": false,
+  "problems": [
+    "new test not passing with reference patch: ::tests.test_tf_add_option_to_disable_progress_bar",
+    "no fail_to_pass tests found",
+    "oracle reward 0.0 (want 1.0)"
+  ]
+}

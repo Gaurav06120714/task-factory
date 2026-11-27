@@ -1,0 +1,6 @@
+title = "Add support for custom ANSI colors"
+area = "utils"
+change_kind = "new_public_api"
+difficulty = "medium"
+tags = ["ANSI colors", "customization"]
+generated_by = "claude-code/qwen2.5-coder:7b"

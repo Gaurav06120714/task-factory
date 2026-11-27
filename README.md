@@ -20,6 +20,7 @@ python3 -m venv .venv
 ```
 
 Docker must be running (OrbStack or Docker Desktop).
+If the checkout is in an iCloud-synced folder (e.g. a synced Desktop), keep `.venv` and `work/` outside it and symlink them in. When disk space is low, macOS offloads their files to iCloud, and every test run then waits for them to download again.
 
 ## Build and validate one task
 ```bash
@@ -32,7 +33,7 @@ The regression list (`pass_to_pass`) is collected inside the task image, not on 
 ```bash
 .venv/bin/python -m factory.generate repos/click.toml --count 4
 ```
-Headless Claude Code (`claude -p`, model set by `TF_MODEL`, default `opus`) proposes features, then implements each one in a throwaway git worktree: the source change, a new test file and `TASK_INSTRUCTION.md`. Each draft has to pass these guardrails before it becomes a task:
+The default backend is free and local: Ollama with `qwen2.5-coder:7b` (`TF_OLLAMA_MODEL`). A 7B model can't edit existing code reliably, so `factory/local_llm.py` drives it in small steps: (1) one new module, which the factory exports; (2) tests, run on the host, with failures sent back for repair and tests that still fail dropped; (3) the requirement document, written from the code and tests. With `TF_BACKEND=claude`, headless Claude Code (`claude -p`, model `TF_MODEL`, default `opus`) instead proposes features, then implements each one in a throwaway git worktree: the source change, a new test file and `TASK_INSTRUCTION.md`. Each draft has to pass these guardrails before it becomes a task:
 
 | Stage | Guardrail |
 |---|---|

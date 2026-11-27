@@ -1,0 +1,40 @@
+diff --git a/docs/source/custom_color.rst b/docs/source/custom_color.rst
+new file mode 100644
+index 0000000..71efae7
+--- /dev/null
++++ b/docs/source/custom_color.rst
+@@ -0,0 +1,6 @@
++Custom Color
++============
++
++The `custom_color` function allows users to define custom ANSI color codes.
++
++.. autofunction:: click.custom_color
+diff --git a/src/click/custom_color.py b/src/click/custom_color.py
+new file mode 100644
+index 0000000..62c77e7
+--- /dev/null
++++ b/src/click/custom_color.py
+@@ -0,0 +1,22 @@
++from typing import Optional, Union
++
++def custom_color(color_code: str) -> str:
++    """Convert a custom ANSI color code to a valid ANSI escape sequence.
++
++    :param color_code: A string representing the custom color code.
++    :return: A string representing the valid ANSI escape sequence.
++    """
++    if not color_code.isdigit():
++        raise ValueError(f"Invalid color code: {color_code}")
++    return f"\033[38;5;{color_code}m"
++=======
++    if not color_code.isdigit():
++        raise ValueError(f"Invalid color code: {color_code}")
++    return f"\033[38;5;{color_code}m"
++
++    :param color_code: A string representing the custom color code.
++    :return: A string representing the valid ANSI escape sequence.
++    """
++    if not color_code.isdigit():
++        raise ValueError(f"Invalid color code: {color_code}")
++    return f"\033[38;5;{color_code}m"

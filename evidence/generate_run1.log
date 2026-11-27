@@ -1,0 +1,76 @@
+[proposed] {"count": 11, "slugs": ["add-progress-bar-with-custom-format", "add-support-for-custom-pager", "add-option-to-disable-ansi-colors", "add-support-for-custom-usage-message", "add-option-to-show-hidden-parameters", "add-support-for-custom-editor", "add-option-to-disable-progress-bar", "add-support-for-
+[proposal_rejected] {"slug": "add-support-for-custom-pager", "reason": "area+change_kind ('_termui_impl', 'new_public_api') already covered"}
+[proposal_rejected] {"slug": "add-option-to-show-hidden-parameters", "reason": "area+change_kind ('core', 'new_option_or_parameter') already covered"}
+[proposal_rejected] {"slug": "add-support-for-custom-editor", "reason": "names files that do not exist: ['src/click/edit.py']"}
+[proposal_rejected] {"slug": "add-support-for-custom-prompt", "reason": "names files that do not exist: ['src/click/prompt.py']"}
+[proposal_rejected] {"slug": "add-option-to-disable-pager", "reason": "area+change_kind ('termui', 'new_option_or_parameter') already covered"}
+[proposal_rejected] {"slug": "add-support-for-custom-confirmation-message", "reason": "names files that do not exist: ['src/click/confirm.py']"}
+[proposal_rejected] {"slug": "add-option-to-disable-echo", "reason": "names files that do not exist: ['src/click/prompt.py']"}
+[generating] {"slug": "add-progress-bar-with-custom-format", "area": "_termui_impl", "change_kind": "new_public_api"}
+[error] {"slug": "add-progress-bar-with-custom-format", "error": "timed out"}
+[result] {"slug": "add-progress-bar-with-custom-format", "valid": false, "attempts": null, "problems": ["timed out"]}
+[generating] {"slug": "add-option-to-disable-ansi-colors", "area": "core", "change_kind": "new_option_or_parameter"}
+[local_round] {"round": 0, "blocks": 6, "edit_problems": 2, "new_tests_pass": false, "suite_pass": false}
+[error] {"slug": "add-option-to-disable-ansi-colors", "error": "Command 'python -m pytest -q -p no:cacheprovider -x tests/test_tf_add_option_to_disable_ansi_colors.py' timed out after 900 seconds"}
+[result] {"slug": "add-option-to-disable-ansi-colors", "valid": false, "attempts": null, "problems": ["Command 'python -m pytest -q -p no:cacheprovider -x tests/test_tf_add_option_to_disable_ansi_colors.py' timed out after 900 seconds"]}
+[generating] {"slug": "add-support-for-custom-usage-message", "area": "core", "change_kind": "new_public_api"}
+[local_round] {"round": 0, "blocks": 3, "edit_problems": 1, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 1, "blocks": 2, "edit_problems": 1, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 2, "blocks": 2, "edit_problems": 1, "new_tests_pass": false, "suite_pass": false}
+[attempt] {"slug": "add-support-for-custom-usage-message", "attempt": 0, "valid": false, "problems": ["no source changes", "instruction leaks the solution or test file names"]}
+[local_round] {"round": 0, "blocks": 2, "edit_problems": 1, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 1, "blocks": 2, "edit_problems": 1, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 2, "blocks": 2, "edit_problems": 1, "new_tests_pass": false, "suite_pass": false}
+[attempt] {"slug": "add-support-for-custom-usage-message", "attempt": 1, "valid": false, "problems": ["no source changes", "instruction leaks the solution or test file names"]}
+[local_round] {"round": 0, "blocks": 2, "edit_problems": 1, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 1, "blocks": 2, "edit_problems": 1, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 2, "blocks": 2, "edit_problems": 1, "new_tests_pass": false, "suite_pass": false}
+[attempt] {"slug": "add-support-for-custom-usage-message", "attempt": 2, "valid": false, "problems": ["no source changes", "instruction leaks the solution or test file names"]}
+[result] {"slug": "add-support-for-custom-usage-message", "valid": false, "attempts": null, "problems": ["no source changes", "instruction leaks the solution or test file names"]}
+[generating] {"slug": "add-option-to-disable-progress-bar", "area": "termui", "change_kind": "new_option_or_parameter"}
+[local_round] {"round": 0, "blocks": 4, "edit_problems": 2, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 1, "blocks": 2, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 2, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[attempt] {"slug": "add-option-to-disable-progress-bar", "attempt": 0, "valid": false, "problems": ["new test not passing with reference patch: ::tests.test_tf_add_option_to_disable_progress_bar", "no fail_to_pass tests found", "oracle reward 0.0 (want 1.0)"]}
+[local_round] {"round": 0, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 1, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 2, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[attempt] {"slug": "add-option-to-disable-progress-bar", "attempt": 1, "valid": false, "problems": ["new test not passing with reference patch: ::tests.test_tf_add_option_to_disable_progress_bar", "no fail_to_pass tests found", "oracle reward 0.0 (want 1.0)"]}
+[local_round] {"round": 0, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 1, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[local_round] {"round": 2, "blocks": 1, "edit_problems": 0, "new_tests_pass": false, "suite_pass": false}
+[attempt] {"slug": "add-option-to-disable-progress-bar", "attempt": 2, "valid": false, "problems": ["new test not passing with reference patch: ::tests.test_tf_add_option_to_disable_progress_bar", "no fail_to_pass tests found", "oracle reward 0.0 (want 1.0)"]}
+[result] {"slug": "add-option-to-disable-progress-bar", "valid": false, "attempts": null, "problems": ["new test not passing with reference patch: ::tests.test_tf_add_option_to_disable_progress_bar", "no fail_to_pass tests found", "oracle reward 0.0 (want 1.0)"]}
+[
+  {
+    "slug": "add-progress-bar-with-custom-format",
+    "valid": false,
+    "problems": [
+      "timed out"
+    ]
+  },
+  {
+    "slug": "add-option-to-disable-ansi-colors",
+    "valid": false,
+    "problems": [
+      "Command 'python -m pytest -q -p no:cacheprovider -x tests/test_tf_add_option_to_disable_ansi_colors.py' timed out after 900 seconds"
+    ]
+  },
+  {
+    "slug": "add-support-for-custom-usage-message",
+    "valid": false,
+    "problems": [
+      "no source changes",
+      "instruction leaks the solution or test file names"
+    ]
+  },
+  {
+    "slug": "add-option-to-disable-progress-bar",
+    "valid": false,
+    "problems": [
+      "new test not passing with reference patch: ::tests.test_tf_add_option_to_disable_progress_bar",
+      "no fail_to_pass tests found",
+      "oracle reward 0.0 (want 1.0)"
+    ]
+  }
+]

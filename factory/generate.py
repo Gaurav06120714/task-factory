@@ -133,6 +133,26 @@ Reply with ONLY a JSON array, no prose. Each element:
 """
 
 
+PROPOSE_LOCAL = """You are designing feature tasks for evaluating AI coding agents on the {name} library ({language}).
+
+Propose {n} NEW, small, useful features. Each is ONE new public class or function in its own new
+module, exported as {name}.<Symbol>. Shapes that work well:
+- a parameter type that parses and validates a command-line value (like IntRange or DateTime)
+- a pure helper that formats or parses text for command-line output
+
+Rules: not already in {name} (its public API is below); 30-120 lines; standard library only;
+deterministic and testable offline with no terminal input; every idea different in behaviour.
+Already taken:
+{existing}
+
+Return {{"proposals": [{{"slug": "kebab-case", "title": "...", "module": "snake_case_module",
+"symbol": "PublicName", "summary": "2-4 sentences: inputs, outputs, error cases",
+"difficulty": "easy|medium|hard", "tags": ["..."]}}]}}
+
+Public API of {name}:
+{api}"""
+
+
 def parse_json_array(text: str) -> list[dict]:
     try:
         data = json.loads(text)
@@ -179,6 +199,10 @@ def filter_proposals(cfg: dict, proposals: list[dict], existing: list[dict]) -> 
             reason = "missing fields"
         elif missing:
             reason = f"names files that do not exist: {missing}"
+        elif "module" in p and not (str(p["module"]).isidentifier() and str(p.get("symbol")).isidentifier()):
+            reason = "module/symbol is not a valid identifier"
+        elif "module" in p and git_has(base, cfg["base_commit"], cfg["new_module"].format(module=p["module"])):
+            reason = "module already exists"
         elif p["slug"] in slugs:
             reason = "duplicate slug"
         elif key in seen:
@@ -204,10 +228,15 @@ def propose(cfg: dict, n: int) -> list[dict]:
     with worktree(cfg) as repo:
         if BACKEND == "claude":
             text = claude(prompt, repo, ["Read", "Glob", "Grep"])["result"]
-        else:  # local model cannot browse: give it the repo's outline instead
-            text = local_llm.chat(prompt + "\n\nRepository outline:\n" + local_llm.outline(cfg, repo)
-                                  + '\n\nReturn {"proposals": [...]}.', json_mode=True)
+        else:  # small local model: one new exported module per feature (see local_llm)
+            api = "\n".join(l for l in (repo / cfg["export_file"]).read_text().splitlines() if "import" in l)
+            text = local_llm.chat(PROPOSE_LOCAL.format(**{**cfg, "n": n * 2, "existing": listing, "api": api}),
+                                  json_mode=True)
     proposals = parse_json_array(text)
+    if BACKEND != "claude":
+        for p in proposals:
+            p.update(area=p.get("module"), change_kind="new_public_api",
+                     new_symbols=[p.get("symbol")], files=[])
     log("proposed", count=len(proposals), slugs=[p.get("slug") for p in proposals])
     return filter_proposals(cfg, proposals, existing)[:n]
 
@@ -289,7 +318,7 @@ def extract_spec(cfg: dict, repo: Path, proposal: dict, test_file: str, spec_dir
     (spec_dir / "meta.toml").write_text(
         "".join(f"{k} = {json.dumps(v or 'medium')}\n" for k, v in meta.items())
         + f"tags = {json.dumps(proposal.get('tags', []))}\n"
-        + f"generated_by = {json.dumps('claude-code/' + MODEL)}\n")
+        + f"generated_by = {json.dumps(f"{BACKEND}/{MODEL}")}\n")
     git("reset", "-q", cwd=repo)  # unstage; keep the working tree for repair rounds
     return []
 
@@ -303,11 +332,11 @@ def generate_one(repo_toml: Path, cfg: dict, proposal: dict, repairs: int) -> di
            "source_paths": ", ".join(cfg["source_paths"])}
     tools = ["Read", "Edit", "Write", "Glob", "Grep"] + [f"Bash({b})" for b in cfg["agent_bash"]]
 
-    def ask(prompt: str) -> None:
+    def ask(prompt: str, problems: list[str] | None = None) -> None:
         if BACKEND == "claude":
             claude(prompt, repo, tools, env)
         else:
-            local_llm.run(cfg, repo, env, prompt, test_file, proposal.get("files", []), repairs, log)
+            local_llm.run(cfg, repo, env, proposal, test_file, repairs, log, problems)
 
     with worktree(cfg) as repo:
         env = agent_env(cfg, repo)
@@ -322,7 +351,7 @@ def generate_one(repo_toml: Path, cfg: dict, proposal: dict, repairs: int) -> di
             if not problems:
                 return {"slug": slug, "valid": True, "attempts": attempt + 1, **report}
             if attempt < repairs:
-                ask(REPAIR.format(problems="\n".join(f"- {p}" for p in problems[:20]), **fmt))
+                ask(REPAIR.format(problems="\n".join(f"- {p}" for p in problems[:20]), **fmt), problems[:20])
 
     # Keep rejected work as evidence of what the guardrails caught.
     if spec_dir.exists():

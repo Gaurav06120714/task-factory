@@ -1,0 +1,118 @@
+       stacklevel=2,
+            )
+            return importlib.metadata.version("click")
+    
+        if name == "get_binary_stream":
+            from .utils import _get_binary_stream
+    
+            warnings.warn(
+                "'get_binary_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_binary_stream
+    
+        if name == "get_text_stream":
+            from .utils import _get_text_stream
+    
+            warnings.warn(
+                "'get_text_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_text_stream
+    
+>       raise AttributeError(name)
+E       AttributeError: custom_color
+
+src/click/__init__.py:144: AttributeError
+__________________________ test_custom_color_invalid ___________________________
+
+    def test_custom_color_invalid():
+        with pytest.raises(ValueError):
+>           click.custom_color("invalid")
+            ^^^^^^^^^^^^^^^^^^
+
+tests/test_custom_color.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'custom_color'
+
+    def __getattr__(name: str) -> object:
+        import warnings
+    
+        if name == "BaseCommand":
+            from .core import _BaseCommand
+    
+            warnings.warn(
+                "'BaseCommand' is deprecated and will be removed in Click 9.0. Use"
+                " 'Command' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _BaseCommand
+    
+        if name == "MultiCommand":
+            from .core import _MultiCommand
+    
+            warnings.warn(
+                "'MultiCommand' is deprecated and will be removed in Click 9.0. Use"
+                " 'Group' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _MultiCommand
+    
+        if name == "OptionParser":
+            from .parser import _OptionParser
+    
+            warnings.warn(
+                "'OptionParser' is deprecated and will be removed in Click 9.0. The"
+                " old parser is available in 'optparse'.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _OptionParser
+    
+        if name == "__version__":
+            import importlib.metadata
+    
+            warnings.warn(
+                "The '__version__' attribute is deprecated and will be removed in"
+                " Click 9.1. Use feature detection or"
+                " 'importlib.metadata.version(\"click\")' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return importlib.metadata.version("click")
+    
+        if name == "get_binary_stream":
+            from .utils import _get_binary_stream
+    
+            warnings.warn(
+                "'get_binary_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_binary_stream
+    
+        if name == "get_text_stream":
+            from .utils import _get_text_stream
+    
+            warnings.warn(
+                "'get_text_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_text_stream
+    
+>       raise AttributeError(name)
+E       AttributeError: custom_color
+
+src/click/__init__.py:144: AttributeError
+----------------- generated xml file: /logs/verifier/junit.xml -----------------
+=========================== short test summary info ============================
+FAILED tests/test_custom_color.py::test_custom_color - AttributeError: custom...
+FAILED tests/test_custom_color.py::test_custom_color_invalid - AttributeError...
+2 failed, 2434 passed, 24 skipped, 31000 deselected, 1 xfailed in 2.44s
+reward=0.0

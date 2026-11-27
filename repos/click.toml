@@ -17,7 +17,12 @@ agent_bash = ["python -m pytest:*"]
 agent_env = { PYTHONPATH = "src" }
 agent_test_hint = "Run tests with: python -m pytest -q -p no:cacheprovider <path>"
 # Used by the local-model backend, which runs tests itself; {path} is a file or the test dir.
-host_test_cmd = "python -m pytest -q -p no:cacheprovider -x {path}"
+host_test_cmd = "python -m pytest -q -p no:cacheprovider {path}"
+# Local-model backend: each feature is one new module that the factory exports.
+new_module = "src/click/{module}.py"
+export_file = "src/click/__init__.py"
+export_line = "from .{module} import {symbol} as {symbol}"
+import_check = "python -c 'import click; click.{symbol}'"
 # Where the feature lives; the patch may only touch these paths.
 source_paths = ["src", "docs", "CHANGES.md"]
 

@@ -1,0 +1,22 @@
+diff --git a/src/click/termui.py b/src/click/termui.py
+index 8fe0085..b883cce 100644
+--- a/src/click/termui.py
++++ b/src/click/termui.py
+@@ -458,6 +458,8 @@ def progressbar(
+     color: bool | None = None,
+     update_min_steps: int = 1,
+ ) -> ProgressBar[V]:
++    if hidden:
++        return
+     """This function creates an iterable context manager that can be used
+     to iterate over something while showing a progress bar.  It will
+     either iterate over the `iterable` or `length` items (that are counted
+@@ -579,6 +581,8 @@ def progressbar(
+     from ._termui_impl import ProgressBar
+ 
+     color = resolve_color_default(color)
++    if hidden:
++        return
+     return ProgressBar(
+         iterable=iterable,
+         length=length,

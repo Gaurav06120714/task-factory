@@ -1,0 +1,6 @@
+title = "Add an option to disable progress bar"
+area = "termui"
+change_kind = "new_option_or_parameter"
+difficulty = "easy"
+tags = ["progress bar", "disable"]
+generated_by = "claude-code/qwen2.5-coder:7b"

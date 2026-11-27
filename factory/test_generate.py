@@ -83,6 +83,10 @@ def test_proposal_filter():
          "files": ["src/click/types.py"]},  # area normalises to "types" -> duplicate
         {"slug": "g", "title": "t", "area": "click.parser", "change_kind": "behaviour_rule", "summary": "s",
          "files": ["src/click/parser.py"]},
+        {"slug": "h", "title": "t", "area": "types2", "change_kind": "new_public_api", "summary": "s",
+         "module": "types", "symbol": "Thing"},  # local backend: module file already exists
+        {"slug": "i", "title": "t", "area": "x y", "change_kind": "new_public_api", "summary": "s",
+         "module": "x y", "symbol": "Thing"},  # not an identifier
     ]
     kept = generate.filter_proposals(CFG, props, existing)
     assert [p["slug"] for p in kept] == ["b", "g"]
