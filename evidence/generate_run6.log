@@ -1,0 +1,5 @@
+[proposed] {"count": 6, "slugs": ["byte-size", "list-splitter", "key-value-parser", "table-renderer", "version-parser", "ip-address-validator"]}
+[generating] {"slug": "byte-size", "area": "byte_size", "change_kind": "new_public_api"}
+[local_step] {"step": "impl", "round": 0, "ok": true}
+[local_step] {"step": "tests", "round": 0, "ok": false}
+[local_step] {"step": "tests", "round": 1, "ok": false}

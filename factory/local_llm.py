@@ -16,6 +16,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 import urllib.request
 from pathlib import Path
 
@@ -159,7 +160,7 @@ def run(cfg: dict, repo: Path, env: dict, proposal: dict, test_file: str, rounds
     """Build the feature in the worktree step by step. problems: validator feedback from a
     previous attempt; then only the tests and the instruction are redone."""
     ex = example(cfg)
-    f = {"local_impl_hint": "", **cfg, **proposal, "mod_path": cfg["new_module"].format(module=proposal["module"]),
+    f = {"local_impl_hint": "", "python": sys.executable, **cfg, **proposal, "mod_path": cfg["new_module"].format(module=proposal["module"]),
          "test_path": f"{cfg['test_dir']}/{test_file}"}
     mod, test = repo / f["mod_path"], repo / f["test_path"]
 

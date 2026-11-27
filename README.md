@@ -16,7 +16,7 @@ work/                      repo clones (not committed)
 ## Setup
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install "harbor==0.25.*" pytest
+.venv/bin/pip install "harbor==0.25.*" pytest pyflakes
 ```
 
 Docker must be running (OrbStack or Docker Desktop).
