@@ -240,7 +240,8 @@ def propose(cfg: dict, n: int) -> list[dict]:
     proposals = parse_json_array(text)
     if BACKEND != "claude":
         for p in proposals:
-            if not str(p.get("module", "")).isidentifier():  # 7B often drops or hyphenates it
+            mod = str(p.get("module", ""))
+            if not mod.isidentifier() or mod == cfg["name"]:  # 7B often drops it or names the package
                 p["module"] = str(p.get("slug", "")).replace("-", "_")
             p.update(area=p.get("module"), change_kind="new_public_api",
                      new_symbols=[p.get("symbol")], files=[])

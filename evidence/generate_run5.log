@@ -1,0 +1,14 @@
+[proposed] {"count": 6, "slugs": ["byte-size", "list-splitter", "key-value-pair", "table-renderer", "semantic-version", "ip-address"]}
+[proposal_rejected] {"slug": "list-splitter", "reason": "area+change_kind ('click', 'new_public_api') already covered"}
+[proposal_rejected] {"slug": "key-value-pair", "reason": "area+change_kind ('click', 'new_public_api') already covered"}
+[proposal_rejected] {"slug": "table-renderer", "reason": "area+change_kind ('click', 'new_public_api') already covered"}
+[proposal_rejected] {"slug": "semantic-version", "reason": "area+change_kind ('click', 'new_public_api') already covered"}
+[proposal_rejected] {"slug": "ip-address", "reason": "area+change_kind ('click', 'new_public_api') already covered"}
+[generating] {"slug": "byte-size", "area": "click", "change_kind": "new_public_api"}
+[local_step] {"step": "impl", "round": 0, "ok": false}
+[local_step] {"step": "impl_error", "error": "NameError: name 'ParamTypeInfoDict' is not defined"}
+[local_step] {"step": "impl", "round": 1, "ok": false}
+[local_step] {"step": "impl_error", "error": "NameError: name 'ParamTypeInfoDict' is not defined"}
+[local_step] {"step": "impl", "round": 2, "ok": false}
+[local_step] {"step": "impl_error", "error": "NameError: name 'ParamTypeInfoDict' is not defined"}
+[attempt] {"slug": "byte-size", "attempt": 0, "valid": false, "problems": ["no new test file", "TASK_INSTRUCTION.md missing or too short"]}
