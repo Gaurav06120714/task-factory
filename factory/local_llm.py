@@ -78,6 +78,28 @@ def drop_failing(source: str, output: str) -> tuple[str, int]:
     return "".join(lines), len([n for n in tests if n.name not in failing])
 
 
+UNDEFINED_RE = re.compile(r"undefined name '(\w+)'")
+
+
+def add_missing_imports(code: str, lint_output: str, export_text: str, extra: dict) -> str:
+    """Small models forget imports. Add the obvious ones: stdlib modules, the package's own
+    public names (from its export file) and names the repo config maps (e.g. `_`)."""
+    # ponytail: Python only; other languages would need their own import fixer
+    where = {m.group(2): m.group(1) for m in re.finditer(r"from (\.\w+) import (\w+)", export_text)}
+    lines = []
+    for name in dict.fromkeys(UNDEFINED_RE.findall(lint_output)):
+        if name in extra:
+            lines.append(extra[name])
+        elif name in sys.stdlib_module_names:
+            lines.append(f"import {name}")
+        elif name in where:
+            lines.append(f"from {where[name]} import {name}")
+    if not lines:
+        return code
+    head, sep, rest = code.partition("from __future__ import annotations\n")
+    return (head + sep + "\n".join(lines) + "\n" + rest) if sep else "\n".join(lines) + "\n" + code
+
+
 def example(cfg: dict) -> dict:
     """The first validated task of this repo, shown to the model as the quality bar."""
     from factory.build import ROOT
@@ -182,6 +204,9 @@ def run(cfg: dict, repo: Path, env: dict, proposal: dict, test_file: str, rounds
             mod.parent.mkdir(parents=True, exist_ok=True)
             mod.write_text(code)
             ok, out = sh(cfg["import_check"].format(**f), repo, env)
+            if not ok and UNDEFINED_RE.search(out):
+                mod.write_text(code := add_missing_imports(code, out, export.read_text(), cfg.get("auto_imports", {})))
+                ok, out = sh(cfg["import_check"].format(**f), repo, env)
             log("local_step", step="impl", round=i, ok=ok)
             if ok:
                 break
@@ -238,6 +263,13 @@ def _selfcheck() -> None:
     kept, left = drop_failing(src, out)
     assert left == 2 and "test_b" not in kept and "parametrize" not in kept and "test_c" in kept, kept
     ast.parse(kept)
+    fixed = add_missing_imports("from __future__ import annotations\nx = re.compile(_('a'))\n",
+                                "m.py:2:5: undefined name 're'\nm.py:2:16: undefined name '_'\n"
+                                "m.py:3:1: undefined name 'ParamType'\n",
+                                "from .types import ParamType as ParamType\n",
+                                {"_": "from gettext import gettext as _"})
+    assert fixed.splitlines()[1:4] == ["import re", "from gettext import gettext as _",
+                                       "from .types import ParamType"], fixed
     print("local_llm selfcheck ok")
 
 
