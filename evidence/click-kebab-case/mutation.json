@@ -1,0 +1,75 @@
+{
+  "spec": "kebab-case",
+  "mutants": 12,
+  "killed": 11,
+  "score": 0.917,
+  "survivors": [
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 52: return None",
+      "killed": false
+    }
+  ],
+  "all": [
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 27: drop `not`",
+      "killed": true
+    },
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 35: IsNot -> Is",
+      "killed": true
+    },
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 35: Lt -> LtE",
+      "killed": true
+    },
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 35: And -> Or",
+      "killed": true
+    },
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 36: IsNot -> Is",
+      "killed": true
+    },
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 36: Gt -> GtE",
+      "killed": true
+    },
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 36: And -> Or",
+      "killed": true
+    },
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 35: Or -> And",
+      "killed": true
+    },
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 38: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 39: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 49: return None",
+      "killed": true
+    },
+    {
+      "file": "src/click/kebab_case_module.py",
+      "mutation": "line 52: return None",
+      "killed": false
+    }
+  ]
+}

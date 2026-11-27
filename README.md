@@ -2,6 +2,17 @@
 
 Turns a repository into validated Harbor 0.25 feature-development task packages.
 
+## Results (27 Nov 2026)
+| Task | fail_to_pass | pass_to_pass | nop | oracle | mutants killed | made by |
+|---|---|---|---|---|---|---|
+| duration-param-type | 26 | 2,434 | 0.0 | 1.0 | 25/25 | hand-written seed spec |
+| byte-size | 29 | 2,434 | 0.0 | 1.0 | 36/37 | qwen2.5-coder:7b + test fix after mutation testing |
+| kebab-case | 14 | 2,434 | 0.0 | 1.0 | 11/12 | qwen2.5-coder:7b |
+| key-value-pairs | 15 | 2,434 | 0.0 | 1.0 | 5/6 | qwen2.5-coder:7b, instruction reviewed |
+| semver | 14 | 2,434 | 0.0 | 1.0 | 36/40 | qwen2.5-coder:7b, instruction reviewed |
+
+nop and oracle are from real `harbor run` jobs. Each manual change is listed in `specs/click/<slug>/REVIEW.md`. Rejected drafts are in `specs_rejected/`. For example, `ip-address` imported `ipaddress` at module load and broke click's `test_light_imports`, so the regression guardrail rejected it. Before recorded test values (runs 1 to 13), 1 draft in about 12 passed. With them, run 14 validated 3 of 4 drafts on the first attempt.
+
 ## Layout
 ```
 repos/<name>.toml          everything repo-specific (url, base_commit, test_cmd, Dockerfile)

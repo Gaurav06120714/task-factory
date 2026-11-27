@@ -1,0 +1,230 @@
+{
+  "spec": "semver",
+  "mutants": 40,
+  "killed": 36,
+  "score": 0.9,
+  "survivors": [
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 79: return None",
+      "killed": false
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 82: return None",
+      "killed": false
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 88: drop `not`",
+      "killed": false
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 89: return None",
+      "killed": false
+    }
+  ],
+  "all": [
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 36: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 43: IsNot -> Is",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 43: 0 -> 1",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 43: Lt -> LtE",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 43: And -> Or",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 44: IsNot -> Is",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 44: 0 -> 1",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 44: Gt -> GtE",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 44: And -> Or",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 43: Or -> And",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 46: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 47: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 56: return None",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 60: 0 -> 1",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 61: 0 -> 1",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 62: 1 -> 2",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 62: Gt -> GtE",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 62: 1 -> 2",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 63: 1 -> 2",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 63: Gt -> GtE",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 63: 1 -> 2",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 65: drop `not`",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 68: IsNot -> Is",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 68: drop `not`",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 68: And -> Or",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 71: IsNot -> Is",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 71: drop `not`",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 71: And -> Or",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 74: return None",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 78: 3 -> 4",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 78: NotEq -> Eq",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 79: return None",
+      "killed": false
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 81: drop `not`",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 82: return None",
+      "killed": false
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 83: return None",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 88: drop `not`",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 88: drop `not`",
+      "killed": false
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 88: And -> Or",
+      "killed": true
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 89: return None",
+      "killed": false
+    },
+    {
+      "file": "src/click/click_semver.py",
+      "mutation": "line 90: return None",
+      "killed": true
+    }
+  ]
+}

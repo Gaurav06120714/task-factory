@@ -1,0 +1,99 @@
+t.raises(click.BadParameter, match=re.escape('123 is not a valid semantic version.')):
+>           click.SemVer().convert(123, None, None)
+            ^^^^^^^^^^^^
+
+tests/test_tf_semver.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'SemVer'
+
+    def __getattr__(name: str) -> object:
+        import warnings
+    
+        if name == "BaseCommand":
+            from .core import _BaseCommand
+    
+            warnings.warn(
+                "'BaseCommand' is deprecated and will be removed in Click 9.0. Use"
+                " 'Command' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _BaseCommand
+    
+        if name == "MultiCommand":
+            from .core import _MultiCommand
+    
+            warnings.warn(
+                "'MultiCommand' is deprecated and will be removed in Click 9.0. Use"
+                " 'Group' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _MultiCommand
+    
+        if name == "OptionParser":
+            from .parser import _OptionParser
+    
+            warnings.warn(
+                "'OptionParser' is deprecated and will be removed in Click 9.0. The"
+                " old parser is available in 'optparse'.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _OptionParser
+    
+        if name == "__version__":
+            import importlib.metadata
+    
+            warnings.warn(
+                "The '__version__' attribute is deprecated and will be removed in"
+                " Click 9.1. Use feature detection or"
+                " 'importlib.metadata.version(\"click\")' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return importlib.metadata.version("click")
+    
+        if name == "get_binary_stream":
+            from .utils import _get_binary_stream
+    
+            warnings.warn(
+                "'get_binary_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_binary_stream
+    
+        if name == "get_text_stream":
+            from .utils import _get_text_stream
+    
+            warnings.warn(
+                "'get_text_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_text_stream
+    
+>       raise AttributeError(name)
+E       AttributeError: SemVer
+
+src/click/__init__.py:144: AttributeError
+----------------- generated xml file: /logs/verifier/junit.xml -----------------
+=========================== short test summary info ============================
+FAILED tests/test_tf_semver.py::test_valid_version - AttributeError: SemVer
+FAILED tests/test_tf_semver.py::test_valid_version_with_pre_release - Attribu...
+FAILED tests/test_tf_semver.py::test_valid_version_with_build - AttributeErro...
+FAILED tests/test_tf_semver.py::test_valid_version_with_pre_release_and_build
+FAILED tests/test_tf_semver.py::test_invalid_version_format - AttributeError:...
+FAILED tests/test_tf_semver.py::test_invalid_pre_release_format - AttributeEr...
+FAILED tests/test_tf_semver.py::test_invalid_build_format - AttributeError: S...
+FAILED tests/test_tf_semver.py::test_version_outside_min_range - AttributeErr...
+FAILED tests/test_tf_semver.py::test_version_outside_max_range - AttributeErr...
+FAILED tests/test_tf_semver.py::test_version_at_min_range - AttributeError: S...
+FAILED tests/test_tf_semver.py::test_version_at_max_range - AttributeError: S...
+FAILED tests/test_tf_semver.py::test_empty_string - AttributeError: SemVer
+FAILED tests/test_tf_semver.py::test_none_value - AttributeError: SemVer
+FAILED tests/test_tf_semver.py::test_non_string_value - AttributeError: SemVer
+14 failed, 2434 passed, 24 skipped, 31000 deselected, 1 xfailed in 4.99s
+reward=0.0

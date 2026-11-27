@@ -1,0 +1,60 @@
+diff --git a/src/click/__init__.py b/src/click/__init__.py
+index a34ab02..918d1c4 100644
+--- a/src/click/__init__.py
++++ b/src/click/__init__.py
+@@ -142,3 +142,4 @@ def __getattr__(name: str) -> object:
+         return _get_text_stream
+ 
+     raise AttributeError(name)
++from .click_ipaddress import IPAddress as IPAddress
+diff --git a/src/click/click_ipaddress.py b/src/click/click_ipaddress.py
+new file mode 100644
+index 0000000..adbed8a
+--- /dev/null
++++ b/src/click/click_ipaddress.py
+@@ -0,0 +1,45 @@
++from __future__ import annotations
++import typing as t
++from gettext import gettext as _
++from ipaddress import ip_address, ip_network, AddressValueError, NetmaskValueError
++from .types import ParamType as ParamType
++from .core import Context as Context
++from .core import Parameter as Parameter
++from .exceptions import BadParameter as BadParameter
++
++class IPAddress(ParamType):
++    """Convert a string into an ipaddress.IPv4Address or ipaddress.IPv6Address object.
++
++    Validates IPv4 and IPv6 addresses and networks using the ipaddress module.
++    Accepts strings, outputs ipaddress.IPv4Address or ipaddress.IPv6Address objects.
++    Raises BadParameter for invalid input.
++
++    :param network: If True, validates as a network instead of an address.
++    """
++
++    name = "ip_address"
++
++    def __init__(self, network: bool = False) -> None:
++        self.network = network
++
++    def convert(
++        self, value: t.Any, param: Parameter | None, ctx: Context | None
++    ) -> ip_address:
++        if isinstance(value, (ip_address, ip_network)):
++            result: ip_address = value
++        else:
++            try:
++                result = ip_address(value) if not self.network else ip_network(value)
++            except (AddressValueError, NetmaskValueError) as e:
++                self.fail(
++                    _("{value!r} is not a valid {network_type} address.").format(
++                        value=value, network_type="network" if self.network else "IP"
++                    ),
++                    param,
++                    ctx,
++                )
++
++        return result
++
++    def __repr__(self) -> str:
++        return "IPAddress"

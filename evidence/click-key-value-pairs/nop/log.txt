@@ -1,0 +1,99 @@
+ne)
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/test_tf_key_value_pairs.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'KeyValuePairs'
+
+    def __getattr__(name: str) -> object:
+        import warnings
+    
+        if name == "BaseCommand":
+            from .core import _BaseCommand
+    
+            warnings.warn(
+                "'BaseCommand' is deprecated and will be removed in Click 9.0. Use"
+                " 'Command' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _BaseCommand
+    
+        if name == "MultiCommand":
+            from .core import _MultiCommand
+    
+            warnings.warn(
+                "'MultiCommand' is deprecated and will be removed in Click 9.0. Use"
+                " 'Group' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _MultiCommand
+    
+        if name == "OptionParser":
+            from .parser import _OptionParser
+    
+            warnings.warn(
+                "'OptionParser' is deprecated and will be removed in Click 9.0. The"
+                " old parser is available in 'optparse'.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _OptionParser
+    
+        if name == "__version__":
+            import importlib.metadata
+    
+            warnings.warn(
+                "The '__version__' attribute is deprecated and will be removed in"
+                " Click 9.1. Use feature detection or"
+                " 'importlib.metadata.version(\"click\")' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return importlib.metadata.version("click")
+    
+        if name == "get_binary_stream":
+            from .utils import _get_binary_stream
+    
+            warnings.warn(
+                "'get_binary_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_binary_stream
+    
+        if name == "get_text_stream":
+            from .utils import _get_text_stream
+    
+            warnings.warn(
+                "'get_text_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_text_stream
+    
+>       raise AttributeError(name)
+E       AttributeError: KeyValuePairs
+
+src/click/__init__.py:144: AttributeError
+----------------- generated xml file: /logs/verifier/junit.xml -----------------
+=========================== short test summary info ============================
+FAILED tests/test_tf_key_value_pairs.py::test_normal_use - AttributeError: Ke...
+FAILED tests/test_tf_key_value_pairs.py::test_empty_string - AttributeError: ...
+FAILED tests/test_tf_key_value_pairs.py::test_single_pair - AttributeError: K...
+FAILED tests/test_tf_key_value_pairs.py::test_multiple_pairs - AttributeError...
+FAILED tests/test_tf_key_value_pairs.py::test_trailing_comma - AttributeError...
+FAILED tests/test_tf_key_value_pairs.py::test_leading_comma - AttributeError:...
+FAILED tests/test_tf_key_value_pairs.py::test_multiple_delimiters - Attribute...
+FAILED tests/test_tf_key_value_pairs.py::test_whitespace_around_delimiter - A...
+FAILED tests/test_tf_key_value_pairs.py::test_missing_value - AttributeError:...
+FAILED tests/test_tf_key_value_pairs.py::test_extra_value - AttributeError: K...
+FAILED tests/test_tf_key_value_pairs.py::test_non_string_input - AttributeErr...
+FAILED tests/test_tf_key_value_pairs.py::test_invalid_delimiter - AttributeEr...
+FAILED tests/test_tf_key_value_pairs.py::test_unicode_key - AttributeError: K...
+FAILED tests/test_tf_key_value_pairs.py::test_unicode_value - AttributeError:...
+FAILED tests/test_tf_key_value_pairs.py::test_non_ascii_delimiter - Attribute...
+15 failed, 2434 passed, 24 skipped, 31000 deselected, 1 xfailed in 6.55s
+reward=0.0

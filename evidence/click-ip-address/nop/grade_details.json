@@ -1,0 +1,20 @@
+{
+  "reward": 0.0,
+  "fail_to_pass_passed": [],
+  "fail_to_pass_failed": [
+    "tests.test_tf_ip_address::test_empty_string",
+    "tests.test_tf_ip_address::test_invalid_ipv4_address",
+    "tests.test_tf_ip_address::test_invalid_ipv4_network",
+    "tests.test_tf_ip_address::test_invalid_ipv6_address",
+    "tests.test_tf_ip_address::test_invalid_ipv6_network",
+    "tests.test_tf_ip_address::test_ipv4_with_leading_zero",
+    "tests.test_tf_ip_address::test_ipv4_with_trailing_zero",
+    "tests.test_tf_ip_address::test_ipv6_with_leading_zero",
+    "tests.test_tf_ip_address::test_non_string_input",
+    "tests.test_tf_ip_address::test_valid_ipv4_address",
+    "tests.test_tf_ip_address::test_valid_ipv4_network",
+    "tests.test_tf_ip_address::test_valid_ipv6_address",
+    "tests.test_tf_ip_address::test_valid_ipv6_network"
+  ],
+  "pass_to_pass_failed": []
+}

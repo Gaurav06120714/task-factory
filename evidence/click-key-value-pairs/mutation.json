@@ -1,0 +1,45 @@
+{
+  "spec": "key-value-pairs",
+  "mutants": 6,
+  "killed": 5,
+  "score": 0.833,
+  "survivors": [
+    {
+      "file": "src/click/key_value_pairs.py",
+      "mutation": "line 46: return None",
+      "killed": false
+    }
+  ],
+  "all": [
+    {
+      "file": "src/click/key_value_pairs.py",
+      "mutation": "line 30: 2 -> 3",
+      "killed": true
+    },
+    {
+      "file": "src/click/key_value_pairs.py",
+      "mutation": "line 30: NotEq -> Eq",
+      "killed": true
+    },
+    {
+      "file": "src/click/key_value_pairs.py",
+      "mutation": "line 36: 0 -> 1",
+      "killed": true
+    },
+    {
+      "file": "src/click/key_value_pairs.py",
+      "mutation": "line 36: 1 -> 2",
+      "killed": true
+    },
+    {
+      "file": "src/click/key_value_pairs.py",
+      "mutation": "line 37: return None",
+      "killed": true
+    },
+    {
+      "file": "src/click/key_value_pairs.py",
+      "mutation": "line 46: return None",
+      "killed": false
+    }
+  ]
+}

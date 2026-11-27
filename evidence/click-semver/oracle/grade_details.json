@@ -1,0 +1,21 @@
+{
+  "reward": 1.0,
+  "fail_to_pass_passed": [
+    "tests.test_tf_semver::test_empty_string",
+    "tests.test_tf_semver::test_invalid_build_format",
+    "tests.test_tf_semver::test_invalid_pre_release_format",
+    "tests.test_tf_semver::test_invalid_version_format",
+    "tests.test_tf_semver::test_non_string_value",
+    "tests.test_tf_semver::test_none_value",
+    "tests.test_tf_semver::test_valid_version",
+    "tests.test_tf_semver::test_valid_version_with_build",
+    "tests.test_tf_semver::test_valid_version_with_pre_release",
+    "tests.test_tf_semver::test_valid_version_with_pre_release_and_build",
+    "tests.test_tf_semver::test_version_at_max_range",
+    "tests.test_tf_semver::test_version_at_min_range",
+    "tests.test_tf_semver::test_version_outside_max_range",
+    "tests.test_tf_semver::test_version_outside_min_range"
+  ],
+  "fail_to_pass_failed": [],
+  "pass_to_pass_failed": []
+}

@@ -204,3 +204,33 @@
 {"t": "2026-11-27T20:45:57", "event": "proposed", "count": 4, "slugs": ["kebab-case", "key-value-pairs", "semver", "ip-address"]}
 {"t": "2026-11-27T20:46:02", "event": "generating", "slug": "kebab-case", "area": "kebab_case_module", "change_kind": "new_public_api"}
 {"t": "2026-11-27T20:46:30", "event": "local_step", "step": "impl", "round": 0, "ok": true}
+{"t": "2026-11-27T20:46:58", "event": "local_step", "step": "tests", "round": 0, "cases": 14, "recorded": 14, "tests": 14}
+{"t": "2026-11-27T20:47:36", "event": "local_step", "step": "instruction", "round": 0, "ok": true}
+{"t": "2026-11-27T20:47:36", "event": "error", "slug": "kebab-case", "error": "Command '['docker', 'build', '-q', '-t', 'taskfactory-click:cf19179e8e2f-76901cb4be', '/Users/apple/Projects/task-factory/tasks/click-kebab-case/environment']' returned non-zero exit status 1."}
+{"t": "2026-11-27T20:47:36", "event": "result", "slug": "kebab-case", "valid": false, "attempts": null, "problems": ["Command '['docker', 'build', '-q', '-t', 'taskfactory-click:cf19179e8e2f-76901cb4be', '/Users/apple/Projects/task-factory/tasks/click-kebab-case/environment']' returned non-zero exit status 1."]}
+{"t": "2026-11-27T20:47:36", "event": "generating", "slug": "key-value-pairs", "area": "key_value_pairs", "change_kind": "new_public_api"}
+{"t": "2026-11-27T20:48:01", "event": "local_step", "step": "impl", "round": 0, "ok": true}
+{"t": "2026-11-27T20:48:31", "event": "local_step", "step": "tests", "round": 0, "cases": 15, "recorded": 15, "tests": 15}
+{"t": "2026-11-27T20:49:21", "event": "local_step", "step": "instruction", "round": 0, "ok": true}
+{"t": "2026-11-27T20:49:39", "event": "attempt", "slug": "key-value-pairs", "attempt": 0, "valid": true, "problems": []}
+{"t": "2026-11-27T20:49:43", "event": "mutation", "slug": "key-value-pairs", "killed": 5, "mutants": 6, "score": 0.833}
+{"t": "2026-11-27T20:49:43", "event": "result", "slug": "key-value-pairs", "valid": true, "attempts": 1, "problems": []}
+{"t": "2026-11-27T20:49:43", "event": "generating", "slug": "semver", "area": "click_semver", "change_kind": "new_public_api"}
+{"t": "2026-11-27T20:50:46", "event": "local_step", "step": "impl", "round": 0, "ok": true}
+{"t": "2026-11-27T20:51:17", "event": "local_step", "step": "tests", "round": 0, "cases": 14, "recorded": 14, "tests": 14}
+{"t": "2026-11-27T20:52:02", "event": "local_step", "step": "instruction", "round": 0, "ok": true}
+{"t": "2026-11-27T20:52:20", "event": "attempt", "slug": "semver", "attempt": 0, "valid": true, "problems": []}
+{"t": "2026-11-27T20:52:38", "event": "mutation", "slug": "semver", "killed": 36, "mutants": 40, "score": 0.9}
+{"t": "2026-11-27T20:52:38", "event": "result", "slug": "semver", "valid": true, "attempts": 1, "problems": []}
+{"t": "2026-11-27T20:52:38", "event": "generating", "slug": "ip-address", "area": "click_ipaddress", "change_kind": "new_public_api"}
+{"t": "2026-11-27T20:53:00", "event": "local_step", "step": "impl", "round": 0, "ok": true}
+{"t": "2026-11-27T20:53:36", "event": "local_step", "step": "tests", "round": 0, "cases": 13, "recorded": 13, "tests": 13}
+{"t": "2026-11-27T20:54:45", "event": "local_step", "step": "instruction", "round": 0, "ok": true}
+{"t": "2026-11-27T20:55:02", "event": "attempt", "slug": "ip-address", "attempt": 0, "valid": false, "problems": ["regression broken by patch: tests.test_imports::test_light_imports", "oracle reward 0.0 (want 1.0)"]}
+{"t": "2026-11-27T20:55:35", "event": "local_step", "step": "tests", "round": 0, "cases": 12, "recorded": 12, "tests": 12}
+{"t": "2026-11-27T20:56:35", "event": "local_step", "step": "instruction", "round": 0, "ok": true}
+{"t": "2026-11-27T20:56:52", "event": "attempt", "slug": "ip-address", "attempt": 1, "valid": false, "problems": ["regression broken by patch: tests.test_imports::test_light_imports", "oracle reward 0.0 (want 1.0)"]}
+{"t": "2026-11-27T20:57:24", "event": "local_step", "step": "tests", "round": 0, "cases": 13, "recorded": 13, "tests": 13}
+{"t": "2026-11-27T20:58:27", "event": "local_step", "step": "instruction", "round": 0, "ok": true}
+{"t": "2026-11-27T20:58:45", "event": "attempt", "slug": "ip-address", "attempt": 2, "valid": false, "problems": ["regression broken by patch: tests.test_imports::test_light_imports", "oracle reward 0.0 (want 1.0)"]}
+{"t": "2026-11-27T20:58:45", "event": "result", "slug": "ip-address", "valid": false, "attempts": null, "problems": ["regression broken by patch: tests.test_imports::test_light_imports", "oracle reward 0.0 (want 1.0)"]}

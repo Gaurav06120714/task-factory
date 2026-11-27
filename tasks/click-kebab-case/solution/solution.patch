@@ -1,0 +1,67 @@
+diff --git a/src/click/__init__.py b/src/click/__init__.py
+index a34ab02..5134803 100644
+--- a/src/click/__init__.py
++++ b/src/click/__init__.py
+@@ -142,3 +142,4 @@ def __getattr__(name: str) -> object:
+         return _get_text_stream
+ 
+     raise AttributeError(name)
++from .kebab_case_module import KebabCase as KebabCase
+diff --git a/src/click/kebab_case_module.py b/src/click/kebab_case_module.py
+new file mode 100644
+index 0000000..4cc8096
+--- /dev/null
++++ b/src/click/kebab_case_module.py
+@@ -0,0 +1,52 @@
++from __future__ import annotations
++import typing as t
++from gettext import gettext as _
++from .types import ParamType as ParamType
++from .core import Context as Context
++from .core import Parameter as Parameter
++from .exceptions import BadParameter as BadParameter
++
++class KebabCase(ParamType):
++    """Convert a comma-separated list into kebab-case.
++
++    A value is a string of comma-separated values.
++
++    :param min: Smallest accepted number of items, inclusive.
++    :param max: Largest accepted number of items, inclusive.
++    """
++
++    name = "kebab_case"
++
++    def __init__(self, min: int | None = None, max: int | None = None) -> None:
++        self.min = min
++        self.max = max
++
++    def convert(
++        self, value: t.Any, param: Parameter | None, ctx: Context | None
++    ) -> str:
++        if not isinstance(value, str):
++            self.fail(
++                _("{value!r} is not a valid string.").format(value=value),
++                param,
++                ctx,
++            )
++
++        items = value.split(',')
++        if (self.min is not None and len(items) < self.min) or (
++            self.max is not None and len(items) > self.max
++        ):
++            low = "-" if self.min is None else str(self.min)
++            high = "-" if self.max is None else str(self.max)
++            self.fail(
++                _("{value!r} does not have the correct number of items. Expected {low} to {high}.").format(
++                    value=value, low=low, high=high
++                ),
++                param,
++                ctx,
++            )
++
++        kebab_case = '-'.join(item.strip().lower() for item in items if item.strip())
++        return kebab_case
++
++    def __repr__(self) -> str:
++        return "KebabCase"

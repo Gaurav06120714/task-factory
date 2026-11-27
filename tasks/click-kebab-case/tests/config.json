@@ -1,0 +1,4 @@
+{
+  "test_cmd": "python -m pytest -p no:cacheprovider -q --continue-on-collection-errors --junitxml={junit} tests",
+  "test_dir": "tests"
+}

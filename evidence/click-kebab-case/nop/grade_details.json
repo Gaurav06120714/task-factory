@@ -1,0 +1,21 @@
+{
+  "reward": 0.0,
+  "fail_to_pass_passed": [],
+  "fail_to_pass_failed": [
+    "tests.test_tf_kebab_case::test_all_uppercase",
+    "tests.test_tf_kebab_case::test_empty_input",
+    "tests.test_tf_kebab_case::test_empty_item",
+    "tests.test_tf_kebab_case::test_leading_space",
+    "tests.test_tf_kebab_case::test_max_boundry",
+    "tests.test_tf_kebab_case::test_max_violation",
+    "tests.test_tf_kebab_case::test_min_boundry",
+    "tests.test_tf_kebab_case::test_min_violation",
+    "tests.test_tf_kebab_case::test_mixed_case",
+    "tests.test_tf_kebab_case::test_multiple_spaces",
+    "tests.test_tf_kebab_case::test_non_string_input",
+    "tests.test_tf_kebab_case::test_normal_use",
+    "tests.test_tf_kebab_case::test_single_item",
+    "tests.test_tf_kebab_case::test_trailing_space"
+  ],
+  "pass_to_pass_failed": []
+}

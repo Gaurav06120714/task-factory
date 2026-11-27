@@ -1,0 +1,133 @@
+diff --git a/src/click/__init__.py b/src/click/__init__.py
+index a34ab02..296bb04 100644
+--- a/src/click/__init__.py
++++ b/src/click/__init__.py
+@@ -142,3 +142,4 @@ def __getattr__(name: str) -> object:
+         return _get_text_stream
+ 
+     raise AttributeError(name)
++from .click_semver import SemVer as SemVer
+diff --git a/src/click/click_semver.py b/src/click/click_semver.py
+new file mode 100644
+index 0000000..822c839
+--- /dev/null
++++ b/src/click/click_semver.py
+@@ -0,0 +1,118 @@
++from __future__ import annotations
++from typing import Any, Optional
++from gettext import gettext as _
++from .types import ParamType as ParamType
++from .core import Context as Context
++from .core import Parameter as Parameter
++from .exceptions import BadParameter as BadParameter
++
++class SemVer(ParamType):
++    """Convert a semantic version string such as ``1.2.3-rc.1`` into a normalized version string.
++
++    A semantic version string consists of a version number followed by an optional pre-release
++    identifier and an optional build metadata identifier. The version number is in the format
++    ``<major>.<minor>.<patch>``. Pre-release identifiers are separated by a hyphen and can
++    contain alphanumeric characters and hyphens. Build metadata identifiers are separated by a plus
++    and can contain alphanumeric characters and hyphens.
++
++    :param min: Smallest accepted version, inclusive.
++    :param max: Largest accepted version, inclusive.
++    """
++
++    name = "semver"
++
++    def __init__(self, min: str | None = None, max: str | None = None) -> None:
++        self.min = min
++        self.max = max
++
++    def convert(
++        self, value: Any, param: Parameter | None, ctx: Context | None
++    ) -> str:
++        if isinstance(value, str):
++            result: str | None = self._parse(value)
++        else:
++            result = None
++
++        if result is None:
++            self.fail(
++                _("{value!r} is not a valid semantic version.").format(value=value),
++                param,
++                ctx,
++            )
++
++        if (self.min is not None and self._compare(result, self.min) < 0) or (
++            self.max is not None and self._compare(result, self.max) > 0
++        ):
++            low = "-" if self.min is None else self.min
++            high = "-" if self.max is None else self.max
++            self.fail(
++                _("{value!r} is not in the range {low} to {high}.").format(
++                    value=value, low=low, high=high
++                ),
++                param,
++                ctx,
++            )
++
++        return result
++
++    def _parse(self, value: str) -> str | None:
++        parts = value.split('+')
++        version_parts = parts[0].split('-')
++        version = version_parts[0]
++        pre_release = version_parts[1] if len(version_parts) > 1 else None
++        build = parts[1] if len(parts) > 1 else None
++
++        if not self._is_valid_version(version):
++            return None
++
++        if pre_release is not None and not self._is_valid_pre_release(pre_release):
++            return None
++
++        if build is not None and not self._is_valid_build(build):
++            return None
++
++        return f"{version}{f'-{pre_release}' if pre_release else ''}{f'+{build}' if build else ''}"
++
++    def _is_valid_version(self, version: str) -> bool:
++        parts = version.split('.')
++        if len(parts) != 3:
++            return False
++        for part in parts:
++            if not part.isdigit():
++                return False
++        return True
++
++    def _is_valid_pre_release(self, pre_release: str) -> bool:
++        parts = pre_release.split('.')
++        for part in parts:
++            if not part.isalnum() and not part.startswith('0'):
++                return False
++        return True
++
++    def _is_valid_build(self, build: str) -> bool:
++        parts = build.split('.')
++        for part in parts:
++            if not part.isalnum() and not part.startswith('0'):
++                return False
++        return True
++
++    def _compare(self, version1: str, version2: str) -> int:
++        v1_parts = version1.split('+')[0].split('-')
++        v2_parts = version2.split('+')[0].split('-')
++        v1 = v1_parts[0].split('.')
++        v2 = v2_parts[0].split('.')
++        for i in range(3):
++            v1_num = int(v1[i]) if i < len(v1) else 0
++            v2_num = int(v2[i]) if i < len(v2) else 0
++            if v1_num != v2_num:
++                return v1_num - v2_num
++        if len(v1_parts) > 1 and len(v2_parts) > 1:
++            return self._compare(v1_parts[1], v2_parts[1])
++        elif len(v1_parts) > 1:
++            return -1
++        elif len(v2_parts) > 1:
++            return 1
++        return 0
++
++    def __repr__(self) -> str:
++        return "SemVer"

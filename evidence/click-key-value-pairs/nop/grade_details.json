@@ -1,0 +1,22 @@
+{
+  "reward": 0.0,
+  "fail_to_pass_passed": [],
+  "fail_to_pass_failed": [
+    "tests.test_tf_key_value_pairs::test_empty_string",
+    "tests.test_tf_key_value_pairs::test_extra_value",
+    "tests.test_tf_key_value_pairs::test_invalid_delimiter",
+    "tests.test_tf_key_value_pairs::test_leading_comma",
+    "tests.test_tf_key_value_pairs::test_missing_value",
+    "tests.test_tf_key_value_pairs::test_multiple_delimiters",
+    "tests.test_tf_key_value_pairs::test_multiple_pairs",
+    "tests.test_tf_key_value_pairs::test_non_ascii_delimiter",
+    "tests.test_tf_key_value_pairs::test_non_string_input",
+    "tests.test_tf_key_value_pairs::test_normal_use",
+    "tests.test_tf_key_value_pairs::test_single_pair",
+    "tests.test_tf_key_value_pairs::test_trailing_comma",
+    "tests.test_tf_key_value_pairs::test_unicode_key",
+    "tests.test_tf_key_value_pairs::test_unicode_value",
+    "tests.test_tf_key_value_pairs::test_whitespace_around_delimiter"
+  ],
+  "pass_to_pass_failed": []
+}

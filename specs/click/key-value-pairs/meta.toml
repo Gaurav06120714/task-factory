@@ -1,0 +1,7 @@
+title = "Parse KEY=VALUE pairs into a tuple"
+area = "key_value_pairs"
+change_kind = "new_public_api"
+difficulty = "medium"
+theme = "a parameter type that parses KEY=VALUE pairs into a tuple, with clear errors for malformed input"
+tags = ["click", "parameter", "parsing", "key-value"]
+generated_by = "ollama/qwen2.5-coder:7b"

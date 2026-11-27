@@ -1,0 +1,1 @@
+Human review (2026-11-27): generated end to end by qwen2.5-coder:7b; first attempt failed only because Docker (OrbStack) had stopped, so it was rebuilt by hand with factory.build. Fixed a typo in instruction.md headings ("Boundry"). Code and tests unchanged. Mutation survivor: __repr__ (not part of the spec).

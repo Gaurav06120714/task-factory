@@ -1,0 +1,7 @@
+title = "Convert a delimited list into kebab-case"
+area = "kebab_case_module"
+change_kind = "new_public_api"
+difficulty = "easy"
+theme = "a parameter type that splits a delimited list such as a,b,c and converts every item with another type"
+tags = ["string manipulation", "text processing"]
+generated_by = "ollama/qwen2.5-coder:7b"

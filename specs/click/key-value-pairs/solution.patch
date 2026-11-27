@@ -1,0 +1,61 @@
+diff --git a/src/click/__init__.py b/src/click/__init__.py
+index a34ab02..2b9dda2 100644
+--- a/src/click/__init__.py
++++ b/src/click/__init__.py
+@@ -142,3 +142,4 @@ def __getattr__(name: str) -> object:
+         return _get_text_stream
+ 
+     raise AttributeError(name)
++from .key_value_pairs import KeyValuePairs as KeyValuePairs
+diff --git a/src/click/key_value_pairs.py b/src/click/key_value_pairs.py
+new file mode 100644
+index 0000000..e08d372
+--- /dev/null
++++ b/src/click/key_value_pairs.py
+@@ -0,0 +1,46 @@
++from __future__ import annotations
++import typing as t
++from gettext import gettext as _
++from .types import ParamType as ParamType
++from .core import Context as Context
++from .core import Parameter as Parameter
++from .exceptions import BadParameter as BadParameter
++
++class KeyValuePairs(ParamType):
++    """Parse KEY=VALUE pairs into a list of tuples.
++
++    Each tuple contains a key and a value. Raises an error if the input is malformed.
++
++    :param delimiter: Delimiter used to separate key and value, default is '='.
++    """
++
++    name = "key_value_pairs"
++
++    def __init__(self, delimiter: str = '=') -> None:
++        self.delimiter = delimiter
++
++    def convert(
++        self, value: t.Any, param: Parameter | None, ctx: Context | None
++    ) -> t.List[t.Tuple[str, str]]:
++        if isinstance(value, str):
++            pairs = value.split(',')
++            result = []
++            for pair in pairs:
++                parts = pair.split(self.delimiter)
++                if len(parts) != 2:
++                    self.fail(
++                        _("{value!r} is not a valid KEY=VALUE pair.").format(value=value),
++                        param,
++                        ctx,
++                    )
++                result.append((parts[0].strip(), parts[1].strip()))
++            return result
++        else:
++            self.fail(
++                _("{value!r} is not a valid string of KEY=VALUE pairs.").format(value=value),
++                param,
++                ctx,
++            )
++
++    def __repr__(self) -> str:
++        return "KeyValuePairs"

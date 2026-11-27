@@ -1,0 +1,45 @@
+schema_version = "1.4"
+artifacts = []
+
+[task]
+name = "taskfactory/click-key-value-pairs"
+version = "1.0.0"
+description = "Parse KEY=VALUE pairs into a tuple"
+authors = []
+keywords = ["click", "parameter", "parsing", "key-value"]
+
+[metadata]
+repo_url = "https://github.com/pallets/click"
+repo_name = "click"
+base_commit = "cf19179e8e2fd54c601378cec9e0d21bb12b6fb1"
+license = "BSD-3-Clause"
+language = "python"
+area = "key_value_pairs"
+change_kind = "new_public_api"
+difficulty = "medium"
+category = "software_engineering"
+tags = ["click", "parameter", "parsing", "key-value"]
+
+[verifier]
+timeout_sec = 900.0
+# Tests run in a fresh copy of the environment; the agent's work arrives only as a
+# git diff, so nothing the agent does to the sandbox can touch the grader.
+environment_mode = "separate"
+
+[verifier.env]
+
+[[verifier.collect]]
+command = "mkdir -p /logs/artifacts && cd /app/repo && git add -A && git diff --cached --binary HEAD > /logs/artifacts/agent.patch"
+
+[agent]
+timeout_sec = 1800.0
+
+[environment]
+network_mode = "public"
+build_timeout_sec = 900.0
+os = "linux"
+mcp_servers = []
+
+[environment.env]
+
+[solution.env]

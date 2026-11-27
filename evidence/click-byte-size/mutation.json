@@ -1,0 +1,200 @@
+{
+  "spec": "byte-size",
+  "mutants": 37,
+  "killed": 36,
+  "score": 0.973,
+  "survivors": [
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 80: return None",
+      "killed": false
+    }
+  ],
+  "all": [
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 34: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 41: IsNot -> Is",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 41: Lt -> LtE",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 41: And -> Or",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 42: IsNot -> Is",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 42: Gt -> GtE",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 42: And -> Or",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 41: Or -> And",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 44: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 45: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 54: return None",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 59: return None",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 61: 1024 -> 1025",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 62: 1024 -> 1025",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 62: 2 -> 3",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 62: Pow -> Mult",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 63: 1024 -> 1025",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 63: 3 -> 4",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 63: Pow -> Mult",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 64: 1024 -> 1025",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 64: 4 -> 5",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 64: Pow -> Mult",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 65: 1024 -> 1025",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 65: 5 -> 6",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 65: Pow -> Mult",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 66: 1024 -> 1025",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 66: 6 -> 7",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 66: Pow -> Mult",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 67: 1024 -> 1025",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 67: 7 -> 8",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 67: Pow -> Mult",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 68: 1024 -> 1025",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 68: 8 -> 9",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 68: Pow -> Mult",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 74: Mult -> Div",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 74: return None",
+      "killed": true
+    },
+    {
+      "file": "src/click/byte_size.py",
+      "mutation": "line 80: return None",
+      "killed": false
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+rt repr(click.KebabCase().convert('ApPle,BaNaNa,ChErRy', None, None)) == "'apple-banana-cherry'"
+                    ^^^^^^^^^^^^^^^
+
+tests/test_tf_kebab_case.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'KebabCase'
+
+    def __getattr__(name: str) -> object:
+        import warnings
+    
+        if name == "BaseCommand":
+            from .core import _BaseCommand
+    
+            warnings.warn(
+                "'BaseCommand' is deprecated and will be removed in Click 9.0. Use"
+                " 'Command' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _BaseCommand
+    
+        if name == "MultiCommand":
+            from .core import _MultiCommand
+    
+            warnings.warn(
+                "'MultiCommand' is deprecated and will be removed in Click 9.0. Use"
+                " 'Group' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _MultiCommand
+    
+        if name == "OptionParser":
+            from .parser import _OptionParser
+    
+            warnings.warn(
+                "'OptionParser' is deprecated and will be removed in Click 9.0. The"
+                " old parser is available in 'optparse'.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _OptionParser
+    
+        if name == "__version__":
+            import importlib.metadata
+    
+            warnings.warn(
+                "The '__version__' attribute is deprecated and will be removed in"
+                " Click 9.1. Use feature detection or"
+                " 'importlib.metadata.version(\"click\")' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return importlib.metadata.version("click")
+    
+        if name == "get_binary_stream":
+            from .utils import _get_binary_stream
+    
+            warnings.warn(
+                "'get_binary_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_binary_stream
+    
+        if name == "get_text_stream":
+            from .utils import _get_text_stream
+    
+            warnings.warn(
+                "'get_text_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_text_stream
+    
+>       raise AttributeError(name)
+E       AttributeError: KebabCase
+
+src/click/__init__.py:144: AttributeError
+----------------- generated xml file: /logs/verifier/junit.xml -----------------
+=========================== short test summary info ============================
+FAILED tests/test_tf_kebab_case.py::test_normal_use - AttributeError: KebabCase
+FAILED tests/test_tf_kebab_case.py::test_empty_input - AttributeError: KebabCase
+FAILED tests/test_tf_kebab_case.py::test_non_string_input - AttributeError: K...
+FAILED tests/test_tf_kebab_case.py::test_min_boundry - AttributeError: KebabCase
+FAILED tests/test_tf_kebab_case.py::test_max_boundry - AttributeError: KebabCase
+FAILED tests/test_tf_kebab_case.py::test_min_violation - AttributeError: Keba...
+FAILED tests/test_tf_kebab_case.py::test_max_violation - AttributeError: Keba...
+FAILED tests/test_tf_kebab_case.py::test_leading_space - AttributeError: Keba...
+FAILED tests/test_tf_kebab_case.py::test_trailing_space - AttributeError: Keb...
+FAILED tests/test_tf_kebab_case.py::test_multiple_spaces - AttributeError: Ke...
+FAILED tests/test_tf_kebab_case.py::test_empty_item - AttributeError: KebabCase
+FAILED tests/test_tf_kebab_case.py::test_single_item - AttributeError: KebabCase
+FAILED tests/test_tf_kebab_case.py::test_all_uppercase - AttributeError: Keba...
+FAILED tests/test_tf_kebab_case.py::test_mixed_case - AttributeError: KebabCase
+14 failed, 2434 passed, 24 skipped, 31000 deselected, 1 xfailed in 7.60s
+reward=0.0

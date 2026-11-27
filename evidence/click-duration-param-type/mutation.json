@@ -1,0 +1,134 @@
+{
+  "spec": "duration-param-type",
+  "mutants": 25,
+  "killed": 25,
+  "score": 1.0,
+  "survivors": [],
+  "all": [
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 945: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 946: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 944: return None",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 953: return None",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 955: drop `not`",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 955: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 955: Or -> And",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 957: IsNot -> Is",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 959: 0 -> 1",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 960: 0 -> 1",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 961: 0 -> 1",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 962: 0 -> 1",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 958: return None",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 973: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 980: IsNot -> Is",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 980: Lt -> LtE",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 980: And -> Or",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 981: IsNot -> Is",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 981: Gt -> GtE",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 981: And -> Or",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 980: Or -> And",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 983: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 984: Is -> IsNot",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 993: return None",
+      "killed": true
+    },
+    {
+      "file": "src/click/types.py",
+      "mutation": "line 996: return None",
+      "killed": true
+    }
+  ]
+}

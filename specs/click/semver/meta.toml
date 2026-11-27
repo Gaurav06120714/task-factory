@@ -1,0 +1,7 @@
+title = "Semantic Version Parameter Type"
+area = "click_semver"
+change_kind = "new_public_api"
+difficulty = "medium"
+theme = "a parameter type that parses and validates semantic version strings such as 1.2.3-rc.1"
+tags = ["versioning", "semver"]
+generated_by = "ollama/qwen2.5-coder:7b"
