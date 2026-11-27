@@ -1,0 +1,101 @@
+_____________________
+
+    def test_both_bounds_message():
+>       t = click.ByteSize(min=1024, max=2048)
+            ^^^^^^^^^^^^^^
+
+tests/test_tf_byte_size.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'ByteSize'
+
+    def __getattr__(name: str) -> object:
+        import warnings
+    
+        if name == "BaseCommand":
+            from .core import _BaseCommand
+    
+            warnings.warn(
+                "'BaseCommand' is deprecated and will be removed in Click 9.0. Use"
+                " 'Command' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _BaseCommand
+    
+        if name == "MultiCommand":
+            from .core import _MultiCommand
+    
+            warnings.warn(
+                "'MultiCommand' is deprecated and will be removed in Click 9.0. Use"
+                " 'Group' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _MultiCommand
+    
+        if name == "OptionParser":
+            from .parser import _OptionParser
+    
+            warnings.warn(
+                "'OptionParser' is deprecated and will be removed in Click 9.0. The"
+                " old parser is available in 'optparse'.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _OptionParser
+    
+        if name == "__version__":
+            import importlib.metadata
+    
+            warnings.warn(
+                "The '__version__' attribute is deprecated and will be removed in"
+                " Click 9.1. Use feature detection or"
+                " 'importlib.metadata.version(\"click\")' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return importlib.metadata.version("click")
+    
+        if name == "get_binary_stream":
+            from .utils import _get_binary_stream
+    
+            warnings.warn(
+                "'get_binary_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_binary_stream
+    
+        if name == "get_text_stream":
+            from .utils import _get_text_stream
+    
+            warnings.warn(
+                "'get_text_stream' is deprecated and will be removed in Click 9.0.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return _get_text_stream
+    
+>       raise AttributeError(name)
+E       AttributeError: ByteSize
+
+src/click/__init__.py:144: AttributeError
+----------------- generated xml file: /logs/verifier/junit.xml -----------------
+=========================== short test summary info ============================
+FAILED tests/test_tf_byte_size.py::test_invalid_values[] - AttributeError: By...
+FAILED tests/test_tf_byte_size.py::test_invalid_values[abc] - AttributeError:...
+FAILED tests/test_tf_byte_size.py::test_invalid_values[1.5Kb] - AttributeErro...
+FAILED tests/test_tf_byte_size.py::test_invalid_values[-5] - AttributeError: ...
+FAILED tests/test_tf_byte_size.py::test_invalid_values[30K1M] - AttributeErro...
+FAILED tests/test_tf_byte_size.py::test_invalid_values[1K1K] - AttributeError...
+FAILED tests/test_tf_byte_size.py::test_invalid_values[1W] - AttributeError: ...
+FAILED tests/test_tf_byte_size.py::test_invalid_values[1K 30K] - AttributeErr...
+FAILED tests/test_tf_byte_size.py::test_invalid_values[K] - AttributeError: B...
+FAILED tests/test_tf_byte_size.py::test_int_passthrough - AttributeError: Byt...
+FAILED tests/test_tf_byte_size.py::test_cli_converts_to_int - AttributeError:...
+FAILED tests/test_tf_byte_size.py::test_max_bound_inclusive_and_message - Att...
+FAILED tests/test_tf_byte_size.py::test_min_bound_message - AttributeError: B...
+FAILED tests/test_tf_byte_size.py::test_both_bounds_message - AttributeError:...
+14 failed, 2434 passed, 24 skipped, 31000 deselected, 1 xfailed in 2.62s
+reward=0.0

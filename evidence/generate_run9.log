@@ -1,0 +1,12 @@
+[proposed] {"count": 6, "slugs": ["byte-size", "list-splitter", "key-value-parser", "table-renderer", "version-parser", "ip-address-validator"]}
+[generating] {"slug": "byte-size", "area": "byte_size", "change_kind": "new_public_api"}
+[local_step] {"step": "impl", "round": 0, "ok": true}
+[local_step] {"step": "tests", "round": 0, "ok": false}
+[local_step] {"step": "tests", "round": 1, "ok": false}
+[local_step] {"step": "tests", "round": 2, "ok": false}
+[local_step] {"step": "drop_failing", "tests_left": 6}
+[local_step] {"step": "instruction", "round": 0, "ok": true}
+[attempt] {"slug": "byte-size", "attempt": 0, "valid": true, "problems": []}
+[result] {"slug": "byte-size", "valid": true, "attempts": 1, "problems": []}
+[generating] {"slug": "list-splitter", "area": "list_splitter", "change_kind": "new_public_api"}
+[local_step] {"step": "impl", "round": 0, "ok": true}

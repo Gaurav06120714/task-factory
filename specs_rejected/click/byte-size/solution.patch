@@ -1,0 +1,97 @@
+diff --git a/src/click/__init__.py b/src/click/__init__.py
+index a34ab02..a894ed7 100644
+--- a/src/click/__init__.py
++++ b/src/click/__init__.py
+@@ -142,3 +142,4 @@ def __getattr__(name: str) -> object:
+         return _get_text_stream
+ 
+     raise AttributeError(name)
++from .byte_size import ByteSize as ByteSize
+diff --git a/src/click/byte_size.py b/src/click/byte_size.py
+new file mode 100644
+index 0000000..e8938b7
+--- /dev/null
++++ b/src/click/byte_size.py
+@@ -0,0 +1,82 @@
++from __future__ import annotations
++import typing as t
++from gettext import gettext as _
++from .core import Parameter as Parameter
++from .core import Context as Context
++from .exceptions import BadParameter as BadParameter
++from .types import ParamType as ParamType
++
++class ByteSize(ParamType):
++    """Convert a human-readable byte size such as ``10KB`` into an integer.
++
++    A value is one or more ``<integer><unit>`` components using the units
++    ``K``, ``M``, ``G``, ``T``, ``P``, ``E``, ``Z``, and ``Y`` (case-insensitive),
++    each at most once and in that order. A bare non-negative integer is a number of bytes.
++
++    :param min: Smallest accepted byte size, inclusive.
++    :param max: Largest accepted byte size, inclusive.
++    """
++
++    name = "byte_size"
++
++    def __init__(
++        self, min: int | None = None, max: int | None = None
++    ) -> None:
++        self.min = min
++        self.max = max
++
++    def convert(
++        self, value: t.Any, param: Parameter | None, ctx: Context | None
++    ) -> int:
++        if isinstance(value, int):
++            result: int | None = value
++        else:
++            result = self._parse(str(value))
++
++        if result is None:
++            self.fail(
++                _("{value!r} is not a valid byte size.").format(value=value),
++                param,
++                ctx,
++            )
++
++        if (self.min is not None and result < self.min) or (
++            self.max is not None and result > self.max
++        ):
++            low = "-" if self.min is None else str(self.min)
++            high = "-" if self.max is None else str(self.max)
++            self.fail(
++                _("{value!r} is not in the range {low} to {high}.").format(
++                    value=value, low=low, high=high
++                ),
++                param,
++                ctx,
++            )
++
++        return result
++
++    def _parse(self, value: str) -> int | None:
++        text = value.strip().upper()
++        if text.isdigit():
++            return int(text)
++        units = {
++            "K": 1024,
++            "M": 1024**2,
++            "G": 1024**3,
++            "T": 1024**4,
++            "P": 1024**5,
++            "E": 1024**6,
++            "Z": 1024**7,
++            "Y": 1024**8,
++        }
++        for unit, multiplier in units.items():
++            if text.endswith(unit):
++                try:
++                    number = float(text[:-len(unit)])
++                    return int(number * multiplier)
++                except ValueError:
++                    return None
++        return None
++
++    def __repr__(self) -> str:
++        return "ByteSize"

@@ -105,14 +105,13 @@ def example(cfg: dict) -> dict:
     from factory.build import ROOT
     specs = sorted((ROOT / "specs" / cfg["name"]).glob("*/solution.patch"))
     if not specs:
-        return {"code": "", "tests": "", "instruction": ""}
+        return {"code": "", "tests": ""}
     spec = specs[0].parent
     code = "\n".join(l[1:] for l in (spec / "solution.patch").read_text().splitlines()
                      if l.startswith("+") and not l.startswith("+++"))
     tests = "\n".join(f.read_text() for f in sorted((spec / "feature").rglob("*.py")))
     return {"code": f"\nExample of good code from an earlier task:\n{code}\n",
-            "tests": f"\nExample of a good test file from an earlier task:\n{tests}\n",
-            "instruction": f"\nExample of a good requirement document:\n{(spec / 'instruction.md').read_text()}\n"}
+            "tests": f"\nExample of a good test file from an earlier task:\n{tests}\n"}
 
 
 IMPL = """You are adding ONE new feature to the {name} library ({language}).
@@ -169,11 +168,13 @@ Implementation:
 Tests:
 {tests}
 
-Specify precisely: that it is available as {name}.{symbol}; its signature; behaviour for normal
-input and for every edge case the tests check; every exact error message or output the tests
-check (quote them). Use markdown headings and bullet lists. Do NOT include code from the
-implementation and do not mention test files.
-{ex}
+Specify precisely: that it is available as {name}.{symbol} (do not say which file it lives in);
+its signature; behaviour for normal input and for every edge case the tests check; every exact
+error message or output the tests check (quote them). Use markdown headings and bullet lists.
+Describe ONLY behaviour this implementation really has: read the code, and check every example,
+accepted format and unit you mention against it. Do NOT include code from the implementation
+and do not mention test files.
+
 Reply with ONLY the markdown document."""
 
 
@@ -247,7 +248,7 @@ def run(cfg: dict, repo: Path, env: dict, proposal: dict, test_file: str, rounds
 
     # 3. requirement document
     for i in range(rounds + 1):
-        doc = ask("instruction", INSTR.format(**f, impl=impl, tests=test.read_text(), ex=ex["instruction"]))
+        doc = ask("instruction", INSTR.format(**f, impl=impl, tests=test.read_text()), i)
         ok = bool(doc) and len(doc) >= 300 and proposal["symbol"] in doc and test_file not in doc
         log("local_step", step="instruction", round=i, ok=ok)
         if ok:
